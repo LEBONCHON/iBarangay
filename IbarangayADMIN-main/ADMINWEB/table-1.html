@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Order Details - iBarangay</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <style>
+        .sidebar,
+        .sidebar .nav-link,
+        .sidebar .sidebar-brand,
+        .sidebar .sidebar-brand-text,
+        .sidebar .sidebar-brand-icon {
+            color: #000 !important;
+        }
+        .sidebar {
+            background: #C7B98E !important;
+        }
+        .sidebar .nav-link.active {
+            background: rgba(0,0,0,0.1);
+            color: #000 !important;
+        }
+        .sidebar .nav-link i {
+            color: #000 !important;
+        }
+        .sidebar .sidebar-brand-icon img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .sidebar .ibarangay-logo {
+            font-size: 1.6rem;
+            color: #000 !important;
+            margin-right: 5px;
+        }
+        .btn, .btn-warning, .btn-success, .btn-info, .btn-secondary {
+            background: #C7B98E !important;
+            border-color: #C7B98E !important;
+            color: #000 !important;
+        }
+        .btn-primary {
+            background: #E2DABE !important;
+            border-color: #E2DABE !important;
+            color: #000 !important;
+        }
+        .btn-primary:active, .btn-primary:focus, .btn-primary:hover {
+            background: #cfc087 !important;
+            border-color: #cfc087 !important;
+            color: #000 !important;
+        }
+        .btn-c7b98e, #submitBtn, .search-btn-custom {
+            background: #C7B98E !important;
+            border-color: #C7B98E !important;
+            color: #000 !important;
+        }
+        .btn-c7b98e:active, .btn-c7b98e:focus, .btn-c7b98e:hover,
+        #submitBtn:active, #submitBtn:focus, #submitBtn:hover,
+        .search-btn-custom:active, .search-btn-custom:focus, .search-btn-custom:hover {
+            background: #b2a67c !important;
+            border-color: #b2a67c !important;
+            color: #000 !important;
+        }
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0; top: 0;
+            width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.2);
+            justify-content: center;
+            align-items: center;
+        }
+        .popup-box {
+            width: 400px;
+            background: rgba(255,255,255,0.95);
+            border-radius: 16px;
+            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+            position: relative;
+            padding: 2.5rem 1.5rem 2rem 1.5rem;
+            text-align: center;
+        }
+        .popup-close {
+            position: absolute;
+            top: 12px;
+            right: 18px;
+            font-size: 1.5rem;
+            color: #888;
+            cursor: pointer;
+        }
+        .popup-box h5 {
+            margin: 2rem 0 1rem 0;
+        }
+    </style>
+</head>
+<body id="page-top">
+<div id="wrapper">
+    <nav class="navbar align-items-start sidebar sidebar-dark accordion p-0 navbar-dark">
+        <div class="container-fluid d-flex flex-column p-0">
+            <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="index.html">
+                <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink" style="color: rgb(0,0,0);"></i></div>
+                <div class="sidebar-brand-text mx-3"><span style="color: rgb(0,0,0);">ibarangay</span></div>
+            </a>
+            <hr class="sidebar-divider my-0">
+            <ul class="navbar-nav text-light" id="accordionSidebar">
+                <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="table.html"><i class="fas fa-table"></i><span>Orders</span></a></li>
+            </ul>
+            <div class="text-center d-none d-md-inline">
+                <button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button>
+            </div>
+        </div>
+    </nav>
+    <div class="d-flex flex-column" id="content-wrapper">
+        <div id="content">
+            <!-- Topbar with search, bell, and user -->
+            <nav class="navbar navbar-expand bg-white shadow mb-4 topbar">
+                <div class="container-fluid">
+                    <button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                    <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input class="bg-light form-control border-0 small" type="text" placeholder="Search for ..." id="searchInput">
+                            <button class="btn search-btn-custom py-0" type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                        </div>
+                    </form>
+                    <ul class="navbar-nav flex-nowrap ms-auto">
+                        <!-- Alerts Dropdown -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="badge bg-danger badge-counter" id="pending-orders-badge">0</span>
+                                <i class="fas fa-bell fa-fw"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in" aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">Pending Orders</h6>
+                                <div id="pending-orders-list"></div>
+                            </div>
+                        </li>
+                        <div class="d-none d-sm-block topbar-divider"></div>
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="d-none d-lg-inline me-2 text-gray-600 small">Admin</span>
+                                <img class="border rounded-circle img-profile" src="assets/img/avatars/avatar1.jpeg">
+                            </a>
+                            <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
+                                <a class="dropdown-item" href="profile.html"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="login.html"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- End Topbar -->
+            <div class="container-fluid">
+                <h3 class="text-dark mb-4">Order Details</h3>
+                <div class="card shadow mb-3">
+                    <div class="card-body">
+                        <form id="orderForm" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Name:</label>
+                                        <span id="name"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Address:</label>
+                                        <span id="address"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Occupation:</label>
+                                        <span id="occupation"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Category:</label>
+                                        <span id="category"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Order:</label>
+                                        <span id="orders"></span>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Status:</label>
+                                        <select class="form-select" id="statusDropdown">
+                                            <option value="Pending">Pending</option>
+                                            <option value="Completed">Completed</option>
+                                            <option value="Denied">Denied</option>
+                                        </select>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Date Requested:</label>
+                                        <span id="dateRequested"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Order Number:</label>
+                                        <span id="orderNumber"></span>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold">Upload File:</label>
+                                        <input type="file" class="form-control" id="uploadFile" name="uploadFile" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-4 text-end">
+                                <button type="submit" class="btn btn-c7b98e" id="submitBtn">Submit</button>
+                                <a href="table.html" class="btn btn-c7b98e">Back</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="bg-white sticky-footer">
+            <div class="container my-auto">
+                <div class="text-center my-auto copyright"><span>Copyright © iBarangay 2025</span></div>
+            </div>
+        </footer>
+    </div>
+    <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+    <div class="popup-overlay" id="popupOverlay">
+        <div class="popup-box">
+            <span class="popup-close" id="popupClose">&times;</span>
+            <h5>Submission completed</h5>
+        </div>
+    </div>
+</div>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script>
+const ORDERS_KEY = "ibarangay_orders";
+function getOrderFromStorage(orderNumber) {
+    const orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
+    return orders.find(ord => ord.orderNumber === orderNumber);
+}
+function updateOrderStatus(orderNumber, newStatus) {
+    let orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
+    const idx = orders.findIndex(ord => ord.orderNumber === orderNumber);
+    if (idx !== -1) {
+        orders[idx].status = newStatus;
+        localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
+    }
+}
+function getOrderNumberFromURL() {
+    const url = new URL(window.location.href);
+    return url.searchParams.get("order");
+}
+function fillOrderDetails() {
+    const orderNumber = getOrderNumberFromURL();
+    const order = getOrderFromStorage(orderNumber);
+    if (order) {
+        document.getElementById('name').textContent = order.name;
+        document.getElementById('address').textContent = order.address || "N/A";
+        document.getElementById('occupation').textContent = order.occupation || "N/A";
+        document.getElementById('category').textContent = order.category;
+        document.getElementById('orders').textContent = order.orders;
+        document.getElementById('statusDropdown').value = order.status;
+        document.getElementById('dateRequested').textContent = order.dateRequested;
+        document.getElementById('orderNumber').textContent = "#" + order.orderNumber;
+    }
+}
+function updateBell() {
+    const orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
+    const pending = orders.filter(o=>o.status==="Pending");
+    document.getElementById('pending-orders-badge').textContent = pending.length;
+    const pendingList = document.getElementById('pending-orders-list');
+    if (pendingList) {
+        if (pending.length === 0) {
+            pendingList.innerHTML = "<div class='px-3 py-2'>No pending orders</div>";
+        } else {
+            pendingList.innerHTML = pending.map(o =>
+                `<div class='px-3 py-1'>#${o.orderNumber} - ${o.name}</div>`
+            ).join('');
+        }
+    }
+}
+function getOrdersFilteredBySearch(orders, searchTerm) {
+    if (!searchTerm) return orders;
+    const term = searchTerm.toLowerCase();
+    return orders.filter(order =>
+        (order.name && order.name.toLowerCase().includes(term)) ||
+        (order.address && order.address.toLowerCase().includes(term)) ||
+        (order.occupation && order.occupation.toLowerCase().includes(term)) ||
+        (order.category && order.category.toLowerCase().includes(term)) ||
+        (order.orders && order.orders.toLowerCase().includes(term)) ||
+        (order.status && order.status.toLowerCase().includes(term)) ||
+        (order.dateRequested && order.dateRequested.toLowerCase().includes(term)) ||
+        (order.orderNumber && order.orderNumber.toLowerCase().includes(term))
+    );
+}
+function searchAndUpdateDetails(searchTerm) {
+    const orders = getOrdersFilteredBySearch(JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]"), searchTerm);
+    const orderNumber = getOrderNumberFromURL();
+    // If the current order is filtered out, show 'N/A'
+    const order = orders.find(ord => ord.orderNumber === orderNumber);
+    if (order) {
+        document.getElementById('name').textContent = order.name;
+        document.getElementById('address').textContent = order.address || "N/A";
+        document.getElementById('occupation').textContent = order.occupation || "N/A";
+        document.getElementById('category').textContent = order.category;
+        document.getElementById('orders').textContent = order.orders;
+        document.getElementById('statusDropdown').value = order.status;
+        document.getElementById('dateRequested').textContent = order.dateRequested;
+        document.getElementById('orderNumber').textContent = "#" + order.orderNumber;
+    } else {
+        document.getElementById('name').textContent = "N/A";
+        document.getElementById('address').textContent = "N/A";
+        document.getElementById('occupation').textContent = "N/A";
+        document.getElementById('category').textContent = "N/A";
+        document.getElementById('orders').textContent = "N/A";
+        document.getElementById('statusDropdown').value = "Pending";
+        document.getElementById('dateRequested').textContent = "N/A";
+        document.getElementById('orderNumber').textContent = "N/A";
+    }
+}
+document.addEventListener("DOMContentLoaded", function() {
+    fillOrderDetails();
+    updateBell();
+    document.getElementById('orderForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const orderNumber = getOrderNumberFromURL();
+        const newStatus = document.getElementById('statusDropdown').value;
+        updateOrderStatus(orderNumber, newStatus);
+        const overlay = document.getElementById('popupOverlay');
+        overlay.style.display = 'flex';
+        document.getElementById('popupClose').onclick = function() {
+            overlay.style.display = 'none';
+            window.location.href = "table.html";
+        };
+        overlay.onclick = function(event) {
+            if(event.target === overlay) {
+                overlay.style.display = 'none';
+                window.location.href = "table.html";
+            }
+        };
+        setTimeout(function() {
+            if(overlay.style.display === 'flex') {
+                overlay.style.display = 'none';
+                window.location.href = "table.html";
+            }
+        }, 1500);
+    });
+    document.getElementById('searchBtn').onclick = function() {
+        const val = document.getElementById('searchInput').value;
+        searchAndUpdateDetails(val);
+    };
+    document.getElementById('searchInput').addEventListener("keypress", function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('searchBtn').click();
+        }
+    });
+});
+</script>
+</body>
+</html>

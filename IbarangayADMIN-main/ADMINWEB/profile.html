@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Profile - iBarangay</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <style>
+        .sidebar,
+        .sidebar .nav-link,
+        .sidebar .sidebar-brand,
+        .sidebar .sidebar-brand-text,
+        .sidebar .sidebar-brand-icon { color: #000 !important; }
+        .sidebar { background: #C7B98E !important; }
+        .sidebar .nav-link.active { background: rgba(0,0,0,0.1); color: #000 !important;}
+        .sidebar .nav-link i { color: #000 !important;}
+        .sidebar .sidebar-brand-icon img { width: 35px; height: 35px; border-radius: 50%; margin-right: 5px;}
+        .sidebar .ibarangay-logo { font-size: 1.6rem; color: #000 !important; margin-right: 5px;}
+        .btn, .btn-warning, .btn-success, .btn-info, .btn-secondary {
+            background: #C7B98E !important;
+            border-color: #C7B98E !important;
+            color: #000 !important;
+        }
+        .btn-c7b98e, .search-btn-custom, #saveProfileBtn {
+            background: #C7B98E !important;
+            border-color: #C7B98E !important;
+            color: #000 !important;
+        }
+        .btn-c7b98e:active, .btn-c7b98e:focus, .btn-c7b98e:hover,
+        .search-btn-custom:active, .search-btn-custom:focus, .search-btn-custom:hover,
+        #saveProfileBtn:active, #saveProfileBtn:focus, #saveProfileBtn:hover {
+            background: #b2a67c !important;
+            border-color: #b2a67c !important;
+            color: #000 !important;
+        }
+        .img-profile-preview {
+            width: 110px;
+            height: 110px;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 3px solid #e2dabe;
+        }
+    </style>
+</head>
+<body id="page-top">
+<div id="wrapper">
+    <nav class="navbar align-items-start sidebar sidebar-dark accordion p-0 navbar-dark">
+        <div class="container-fluid d-flex flex-column p-0">
+            <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="index.html">
+                <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink" style="color: rgb(0,0,0);"></i></div>
+                <div class="sidebar-brand-text mx-3"><span style="color: rgb(0,0,0);">ibarangay</span></div>
+            </a>
+            <hr class="sidebar-divider my-0">
+            <ul class="navbar-nav text-light" id="accordionSidebar">
+                <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                <li class="nav-item"><a class="nav-link active" href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="table.html"><i class="fas fa-table"></i><span>Orders</span></a></li>
+            </ul>
+            <div class="text-center d-none d-md-inline">
+                <button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button>
+            </div>
+        </div>
+    </nav>
+    <div class="d-flex flex-column" id="content-wrapper">
+        <div id="content">
+            <nav class="navbar navbar-expand bg-white shadow mb-4 topbar">
+                <div class="container-fluid">
+                    <button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                    <ul class="navbar-nav flex-nowrap ms-auto">
+                        <div class="d-none d-sm-block topbar-divider"></div>
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="d-none d-lg-inline me-2 text-gray-600 small" id="profileNameTop">My Profile</span>
+                                <img class="border rounded-circle img-profile" id="profileNavAvatar" src="assets/img/avatars/avatar1.jpeg">
+                            </a>
+                            <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
+                                <a class="dropdown-item" href="profile.html"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="login.html"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="container-fluid">
+                <h3 class="text-dark mb-4">Profile</h3>
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <div class="card shadow mb-3">
+                            <div class="card-body">
+                                <form id="profileForm" autocomplete="off">
+                                    <div class="mb-3 text-center">
+                                        <img id="profileImagePreview" class="img-profile-preview mb-2" src="assets/img/avatars/avatar1.jpeg" alt="Profile Picture">
+                                        <div>
+                                            <input class="form-control" type="file" id="profileImage" name="profileImage" accept="image/*">
+                                            <div class="form-text">Upload a profile picture (optional)</div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold" for="profileName">Full Name</label>
+                                        <input class="form-control" type="text" id="profileName" name="profileName" maxlength="60" required>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold" for="profileAddress">Address</label>
+                                        <input class="form-control" type="text" id="profileAddress" name="profileAddress" maxlength="100" placeholder="e.g., 123 Mabini St, Makati, Metro Manila">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold" for="profileOccupation">Occupation</label>
+                                        <input class="form-control" type="text" id="profileOccupation" name="profileOccupation" maxlength="40" placeholder="e.g., Teacher">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label fw-bold" for="profilePhone">Phone Number</label>
+                                        <input class="form-control" type="text" id="profilePhone" name="profilePhone" minlength="7" maxlength="11" pattern="\d{7,11}" placeholder="e.g., 09171234567" inputmode="numeric">
+                                        <div class="form-text">7-11 digits, numbers only. Example: 09171234567</div>
+                                    </div>
+                                    <div class="text-end">
+                                        <button class="btn btn-c7b98e" id="saveProfileBtn" type="submit">Save Profile</button>
+                                    </div>
+                                    <div id="saveMsg" class="mt-3" style="display:none;">
+                                        <div class="alert alert-success mb-0 py-2">Profile saved!</div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="card shadow mb-3">
+                            <div class="card-body">
+                                <h5>Current Saved Profile:</h5>
+                                <ul class="list-group">
+                                    <li class="list-group-item">Name: <span id="savedName"></span></li>
+                                    <li class="list-group-item">Address: <span id="savedAddress"></span></li>
+                                    <li class="list-group-item">Occupation: <span id="savedOccupation"></span></li>
+                                    <li class="list-group-item">Phone: <span id="savedPhone"></span></li>
+                                    <li class="list-group-item">Picture: <span id="savedPic"></span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="bg-white sticky-footer">
+            <div class="container my-auto">
+                <div class="text-center my-auto copyright"><span>Copyright © iBarangay 2025</span></div>
+            </div>
+        </footer>
+    </div>
+    <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+</div>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script>
+const PROFILE_KEY = "ibarangay_profile";
+function saveProfileToStorage(profile) {
+    localStorage.setItem(PROFILE_KEY, JSON.stringify(profile));
+}
+function loadProfileFromStorage() {
+    return JSON.parse(localStorage.getItem(PROFILE_KEY) || "{}");
+}
+function populateProfileForm() {
+    const profile = loadProfileFromStorage();
+    document.getElementById('profileName').value = profile.name || "";
+    document.getElementById('profileAddress').value = profile.address || "";
+    document.getElementById('profileOccupation').value = profile.occupation || "";
+    document.getElementById('profilePhone').value = profile.phone || "";
+    document.getElementById('profileNameTop').textContent = profile.name || "My Profile";
+    document.getElementById('savedName').textContent = profile.name || "-";
+    document.getElementById('savedAddress').textContent = profile.address || "-";
+    document.getElementById('savedOccupation').textContent = profile.occupation || "-";
+    document.getElementById('savedPhone').textContent = profile.phone || "-";
+    if (profile.pic) {
+        document.getElementById('profileImagePreview').src = profile.pic;
+        document.getElementById('profileNavAvatar').src = profile.pic;
+        document.getElementById('savedPic').innerHTML = '<img src="' + profile.pic + '" style="width:48px;height:48px;border-radius:50%">';
+    } else {
+        document.getElementById('profileImagePreview').src = "assets/img/avatars/avatar1.jpeg";
+        document.getElementById('profileNavAvatar').src = "assets/img/avatars/avatar1.jpeg";
+        document.getElementById('savedPic').textContent = "No image";
+    }
+}
+document.addEventListener("DOMContentLoaded", function() {
+    populateProfileForm();
+    document.getElementById('profileImage').addEventListener("change", function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+            document.getElementById('profileImagePreview').src = evt.target.result;
+        };
+        reader.readAsDataURL(file);
+    });
+    document.getElementById('profileForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        // Validate phone: must be 7-11 digits, numbers only
+        const phone = document.getElementById('profilePhone').value.trim();
+        if (phone && (!/^\d{7,11}$/.test(phone))) {
+            alert("Phone number must be between 7 and 11 digits (numbers only).");
+            document.getElementById('profilePhone').focus();
+            return;
+        }
+        const profile = {
+            name: document.getElementById('profileName').value.trim(),
+            address: document.getElementById('profileAddress').value.trim(),
+            occupation: document.getElementById('profileOccupation').value.trim(),
+            phone: phone
+        };
+        // Save picture as base64
+        const img = document.getElementById('profileImagePreview').src;
+        if (img && img.startsWith("data:image")) {
+            profile.pic = img;
+        }
+        saveProfileToStorage(profile);
+        populateProfileForm();
+        document.getElementById('saveMsg').style.display = "block";
+        setTimeout(()=>{document.getElementById('saveMsg').style.display="none";}, 1500);
+    });
+});
+</script>
+</body>
+</html>

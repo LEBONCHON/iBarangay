@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Table - Orders</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <style>
+        .pointer { cursor: pointer; }
+        .sidebar,
+        .sidebar .nav-link,
+        .sidebar .sidebar-brand,
+        .sidebar .sidebar-brand-text,
+        .sidebar .sidebar-brand-icon { color: #000 !important; }
+        .sidebar { background: #C7B98E !important; }
+        .sidebar .nav-link.active { background: rgba(0,0,0,0.1); color: #000 !important;}
+        .sidebar .nav-link i { color: #000 !important;}
+        .sidebar .sidebar-brand-icon img { width: 35px; height: 35px; border-radius: 50%; margin-right: 5px;}
+        .sidebar .ibarangay-logo { font-size: 1.6rem; color: #000 !important; margin-right: 5px;}
+        .btn, .btn-warning, .btn-success, .btn-info, .btn-secondary {
+            background: #C7B98E !important;
+            border-color: #C7B98E !important;
+            color: #000 !important;
+        }
+        .btn-c7b98e, .search-btn-custom {
+            background: #C7B98E !important;
+            border-color: #C7B98E !important;
+            color: #000 !important;
+        }
+        .btn-c7b98e:active, .btn-c7b98e:focus, .btn-c7b98e:hover,
+        .search-btn-custom:active, .search-btn-custom:focus, .search-btn-custom:hover {
+            background: #b2a67c !important;
+            border-color: #b2a67c !important;
+            color: #000 !important;
+        }
+        .btn-primary {
+            background: #E2DABE !important;
+            border-color: #E2DABE !important;
+            color: #000 !important;
+        }
+        .btn-primary:active, .btn-primary:focus, .btn-primary:hover {
+            background: #cfc087 !important;
+            border-color: #cfc087 !important;
+            color: #000 !important;
+        }
+    </style>
+</head>
+<body id="page-top">
+<div id="wrapper">
+    <nav class="navbar align-items-start sidebar sidebar-dark accordion p-0 navbar-dark">
+        <div class="container-fluid d-flex flex-column p-0">
+            <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="index.html">
+                <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink" style="color: rgb(0,0,0);"></i></div>
+                <div class="sidebar-brand-text mx-3"><span style="color: rgb(0,0,0);">ibarangay</span></div>
+            </a>
+            <hr class="sidebar-divider my-0">
+            <ul class="navbar-nav text-light" id="accordionSidebar">
+                <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a></li>
+                <li class="nav-item"><a class="nav-link active" href="table.html"><i class="fas fa-table"></i><span>Orders</span></a></li>
+            </ul>
+            <div class="text-center d-none d-md-inline">
+                <button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button>
+            </div>
+        </div>
+    </nav>
+    <div class="d-flex flex-column" id="content-wrapper">
+        <div id="content">
+            <!-- Topbar with search, bell, and user -->
+            <nav class="navbar navbar-expand bg-white shadow mb-4 topbar">
+                <div class="container-fluid">
+                    <button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                    <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input class="bg-light form-control border-0 small" type="text" placeholder="Search for ..." id="searchInput">
+                            <button class="btn search-btn-custom py-0" type="button" id="searchBtn"><i class="fas fa-search"></i></button>
+                        </div>
+                    </form>
+                    <ul class="navbar-nav flex-nowrap ms-auto">
+                        <!-- Alerts Dropdown -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="badge bg-danger badge-counter" id="pending-orders-badge">0</span>
+                                <i class="fas fa-bell fa-fw"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in" aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">Pending Orders</h6>
+                                <div id="pending-orders-list"></div>
+                            </div>
+                        </li>
+                        <div class="d-none d-sm-block topbar-divider"></div>
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="d-none d-lg-inline me-2 text-gray-600 small">Admin</span>
+                                <img class="border rounded-circle img-profile" src="assets/img/avatars/avatar1.jpeg">
+                            </a>
+                            <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
+                                <a class="dropdown-item" href="profile.html"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="login.html"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- End Topbar -->
+            <div class="container-fluid">
+                <h3 class="text-dark mb-4">Orders Table</h3>
+                <div class="card shadow">
+                    <div class="card-header py-3">
+                        <p class="text-primary m-0 fw-bold">Order Info</p>
+                    </div>
+                    <div class="card-body">
+                        <div class="table-responsive table mt-2" id="dataTable" role="grid" aria-describedby="dataTable_info">
+                            <table class="table my-0" id="orderTable">
+                                <thead>
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Address</th>
+                                        <th>Occupation</th>
+                                        <th>Category</th>
+                                        <th>Orders</th>
+                                        <th>Status</th>
+                                        <th>Date Requested</th>
+                                        <th>Order Number</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="orders-tbody">
+                                    <!-- Orders will be injected here by JS -->
+                                </tbody>
+                                <tfoot>
+                                    <tr>
+                                        <td><strong>Name</strong></td>
+                                        <td><strong>Address</strong></td>
+                                        <td><strong>Occupation</strong></td>
+                                        <td><strong>Category</strong></td>
+                                        <td><strong>Orders</strong></td>
+                                        <td><strong>Status</strong></td>
+                                        <td><strong>Date Requested</strong></td>
+                                        <td><strong>Order Number</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <footer class="bg-white sticky-footer">
+            <div class="container my-auto">
+                <div class="text-center my-auto copyright"><span>Copyright © iBarangay 2025</span></div>
+            </div>
+        </footer>
+    </div>
+    <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+</div>
+
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script>
+const ORDERS_KEY = "ibarangay_orders";
+function getSampleOrders() {
+    return [
+        {
+            orderNumber: "395688",
+            name: "Juan, Andres",
+            address: "69 T.Castillo Street Cor.Katipunan Road, Quezon City",
+            occupation: "Accountant",
+            category: "Document",
+            orders: "Business Permit",
+            status: "Pending",
+            dateRequested: "2025/06/01"
+        },
+        {
+            orderNumber: "124148",
+            name: "Jomar, Renzo",
+            address: "General Trias Drive, Rosario",
+            occupation: "Software Developer",
+            category: "Document",
+            orders: "Certificate of Residency",
+            status: "Completed",
+            dateRequested: "2025/05/30"
+        },
+        {
+            orderNumber: "789101",
+            name: "Jaycee Corciega",
+            address: "Afelor Street, Tan Building, San Roque, Iriga",
+            occupation: "Businessman",
+            category: "Document",
+            orders: "Business Permit",
+            status: "Pending",
+            dateRequested: "2025/06/02"
+        },
+        {
+            orderNumber: "456212",
+            name: "Maria Santos",
+            address: "23 Mabuhay Avenue, Makati",
+            occupation: "Teacher",
+            category: "Document",
+            orders: "Barangay Clearance",
+            status: "Pending",
+            dateRequested: "2025/05/31"
+        },
+        {
+            orderNumber: "987654",
+            name: "Pedro Cruz",
+            address: "77 Bonifacio St., Pasig",
+            occupation: "Driver",
+            category: "Document",
+            orders: "Indigency Certificate",
+            status: "Completed",
+            dateRequested: "2025/05/28"
+        }
+    ];
+}
+function initOrders() {
+    // Always reset sample data for demo purposes (for this demo only)
+    localStorage.setItem(ORDERS_KEY, JSON.stringify(getSampleOrders()));
+}
+function getOrdersFilteredBySearch(orders, searchTerm) {
+    if (!searchTerm) return orders;
+    const term = searchTerm.toLowerCase();
+    return orders.filter(order =>
+        (order.name && order.name.toLowerCase().includes(term)) ||
+        (order.address && order.address.toLowerCase().includes(term)) ||
+        (order.occupation && order.occupation.toLowerCase().includes(term)) ||
+        (order.category && order.category.toLowerCase().includes(term)) ||
+        (order.orders && order.orders.toLowerCase().includes(term)) ||
+        (order.status && order.status.toLowerCase().includes(term)) ||
+        (order.dateRequested && order.dateRequested.toLowerCase().includes(term)) ||
+        (order.orderNumber && order.orderNumber.toLowerCase().includes(term))
+    );
+}
+function loadOrders(searchTerm="") {
+    const orders = getOrdersFilteredBySearch(JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]"), searchTerm);
+    const tbody = document.getElementById('orders-tbody');
+    tbody.innerHTML = "";
+    for (const order of orders) {
+        const tr = document.createElement("tr");
+        tr.classList.add("pointer");
+        tr.setAttribute("data-order-number", order.orderNumber);
+        tr.innerHTML = `
+            <td>${order.name}</td>
+            <td>${order.address || ""}</td>
+            <td>${order.occupation || ""}</td>
+            <td>${order.category}</td>
+            <td>${order.orders}</td>
+            <td class="order-status" data-order-number="${order.orderNumber}">${order.status}</td>
+            <td>${order.dateRequested}</td>
+            <td>#${order.orderNumber}</td>
+        `;
+        tbody.appendChild(tr);
+    }
+    document.querySelectorAll('tr[data-order-number]').forEach(row => {
+        row.addEventListener('click', function () {
+            const orderNum = row.getAttribute('data-order-number');
+            window.location.href = `table-1.html?order=${orderNum}`;
+        });
+    });
+    updateBell();
+}
+function updateBell() {
+    const orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
+    const pending = orders.filter(o=>o.status==="Pending");
+    document.getElementById('pending-orders-badge').textContent = pending.length;
+    const pendingList = document.getElementById('pending-orders-list');
+    if (pendingList) {
+        if (pending.length === 0) {
+            pendingList.innerHTML = "<div class='px-3 py-2'>No pending orders</div>";
+        } else {
+            pendingList.innerHTML = pending.map(o =>
+                `<div class='px-3 py-1'>#${o.orderNumber} - ${o.name}</div>`
+            ).join('');
+        }
+    }
+}
+initOrders();
+loadOrders();
+document.getElementById('searchBtn').onclick = function() {
+    const val = document.getElementById('searchInput').value;
+    loadOrders(val);
+};
+document.getElementById('searchInput').addEventListener("keypress", function(e) {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        document.getElementById('searchBtn').click();
+    }
+});
+</script>
+</body>
+</html>

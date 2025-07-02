@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Home</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<nav>
+  <a href="index.html">
+    <img src="https://app.bploparanaque.com/safetyseal/images/logo.png" alt="City Seal" class="logo">
+  </a>
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="request.html">Request</a>
+    <a href="orders.html">Orders</a>
+    <a href="status.html">Status</a>
+    <a href="contact.html">Contact</a>
+    <a href="profile.html" class="profile-link">
+      <img src="https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png" alt="Profile Photo" class="profile-photo">
+    </a>
+  </div>
+</nav>
+
+<div class="slideshow-container">
+  <div class="slideshow-images">
+    <img src="https://i0.wp.com/carlocarrasco.com/wp-content/uploads/2022/01/pquecover.jpg?fit=1200%2C679&ssl=1" alt="Image 1" class="active">
+    <img src="https://www.lamudi.com.ph/journal/wp-content/uploads/2023/01/Depositphotos_377513248_S.jpg" alt="Image 2">
+    <img src="https://paranaquecity.gov.ph/wp-content/uploads/2023/04/cityofdreams-2.jpg" alt="Image 3">
+  </div>
+ <button class="arrow left-arrow" onclick="prevSlide()"></button>
+<button class="arrow right-arrow" onclick="nextSlide()"></button>
+
+</div>
+
+<footer class="site-footer">
+  <div class="footer-section">
+    <div>
+      <p>
+        <a href="index.html">Home</a><br>
+        <a href="contact.html">Contact Us</a>
+      </p>
+      <p>help@ibarangay.com<br>(02) 1234-5678</p>
+    </div>
+    <div>
+      <p>
+        <a href="iBaranagy_T&C .html" id="footerUserAgreement">User Agreement</a><br>
+        <a href="iBarangay_T&C .html" id="footerPrivacyPolicy">Privacy Policy</a>
+      </p>
+    </div>
+    <div>
+      <p>Accredited Partner of:<br><strong>iBarangay</strong></p>
+    </div>
+    <div>
+      <p>Powered by:<br><strong>iBarangay</strong></p>
+    </div>
+    <div class="footer-icons">
+      <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png" alt="Facebook" /></a>
+      <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/1200px-Instagram_icon.png" alt="Instagram" /></a>
+    </div>
+  </div>
+</footer>
+
+
+
+<script>
+  let currentIndex = 0;
+  const images = document.querySelectorAll('.slideshow-images img');
+
+  function showSlide(index) {
+    if (index >= images.length) index = 0;
+    if (index < 0) index = images.length - 1;
+    currentIndex = index;
+
+    images.forEach((img, i) => {
+      img.classList.toggle('active', i === index);
+    });
+  }
+
+  function nextSlide() {
+    showSlide(currentIndex + 1);
+  }
+
+  function prevSlide() {
+    showSlide(currentIndex - 1);
+  }
+
+  setInterval(nextSlide, 5000);
+</script>
+
+</body>
+</html>

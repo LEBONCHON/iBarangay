@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Orders</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <nav>
+  <a href="index.html">
+    <img src="https://app.bploparanaque.com/safetyseal/images/logo.png" alt="City Seal" class="logo">
+  </a>
+
+  <div class="nav-links">
+    <a href="index.html">Home</a>
+    <a href="request.html">Request</a>
+    <a href="orders.html">Orders</a>
+    <a href="status.html">Status</a>
+    <a href="contact.html">Contact</a>
+    <a href="profile.html" class="profile-link">
+      <img src="https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png" alt="Profile Photo" class="profile-photo">
+    </a>
+  </div>
+</nav>
+
+    <div class="orders-container">
+  <div class="orders-title">Orders:</div>
+  <div id="order-list"></div>
+
+  <div class="note">
+    *Orders will be ready for pick-up in 3–5 business days
+    <small>Bring any valid Government ID</small>
+  </div>
+
+  <div class="subtotal">SUBTOTAL: ₱0.00</div>
+
+    <div class="actions">
+  <button class="back-btn" onclick="window.location.href='request.html'">Back</button>
+  <button class="proceed-btn" onclick="window.location.href='status.html'">Proceed</button>
+</div>
+
+  </div>
+
+  
+
+  <footer class="site-footer">
+  <div class="footer-section">
+    <div>
+      <p>
+        <a href="index.html">Home</a><br>
+        <a href="contact.html">Contact Us</a>
+      </p>
+      <p>help@ibarangay.com<br>(02) 1234-5678</p>
+    </div>
+    <div>
+      <p>
+        <a href="iBaranagy_T&C .html" id="footerUserAgreement">User Agreement</a><br>
+        <a href="iBarangay_T&C .html" id="footerPrivacyPolicy">Privacy Policy</a>
+      </p>
+    </div>
+    <div>
+      <p>Accredited Partner of:<br><strong>iBarangay</strong></p>
+    </div>
+    <div>
+      <p>Powered by:<br><strong>iBarangay</strong></p>
+    </div>
+    <div class="footer-icons">
+      <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png" alt="Facebook" /></a>
+      <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/1200px-Instagram_icon.png" alt="Instagram" /></a>
+    </div>
+  </div>
+</footer>
+
+
+  <script>
+  function loadOrders() {
+    const orderList = document.getElementById('order-list');
+    orderList.innerHTML = '';
+    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+
+    orders.forEach((item, index) => {
+      const orderEl = document.createElement('div');
+      orderEl.className = 'order-item';
+      orderEl.innerHTML = `
+        <div class="order-info">
+          <img src="https://img.icons8.com/ios/50/document--v1.png" alt="doc" />
+          <div class="order-name">${item.name}</div>
+        </div>
+        <div class="order-price">₱${item.price}</div>
+        <div class="quantity-control">
+          <button onclick="adjustQty(${index}, -1)">-</button>
+          <span>${item.qty}</span>
+          <button onclick="adjustQty(${index}, 1)">+</button>
+        </div>
+        <div class="order-total">₱${item.price * item.qty}</div>
+        <button onclick="removeOrder(${index})" style="margin-left: 10px;">🗑️</button>
+      `;
+      orderList.appendChild(orderEl);
+    });
+
+    updateSubtotal();
+  }
+
+  function adjustQty(index, delta) {
+    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+    orders[index].qty = Math.max(1, orders[index].qty + delta);
+    localStorage.setItem('orders', JSON.stringify(orders));
+    loadOrders();
+  }
+
+  function removeOrder(index) {
+    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+    orders.splice(index, 1);
+    localStorage.setItem('orders', JSON.stringify(orders));
+    loadOrders();
+  }
+
+  function updateSubtotal() {
+    let subtotal = 0;
+    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+    orders.forEach(item => {
+      subtotal += item.qty * item.price;
+    });
+    document.querySelector('.subtotal').textContent = 'SUBTOTAL: ₱' + subtotal.toFixed(2);
+  }
+
+  window.onload = loadOrders;
+</script>
+
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Login / Sign Up</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body, html {
+      margin: 0;
+      padding: 0;
+      height: 100vh;
+      font-family: Arial, sans-serif;
+      background-image: url('https://i0.wp.com/carlocarrasco.com/wp-content/uploads/2022/01/pquecover.jpg?fit=1200%2C679&ssl=1');
+      background-size: cover;
+      background-position: center;
+      overflow: hidden;
+    }
+
+    .overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 10;
+    }
+
+    .login-container {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px 40px;
+      border-radius: 10px;
+      width: 360px;
+      text-align: center;
+      z-index: 20;
+      box-shadow: 0 0 20px rgba(0,0,0,0.3);
+      color: #6D2525;
+    }
+
+    .login-container h2 {
+      margin-bottom: 20px;
+    }
+
+    .login-container input {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      font-size: 16px;
+      border: 1px solid #aaa;
+      border-radius: 5px;
+    }
+
+    .login-container button {
+      width: 100%;
+      padding: 12px;
+      background-color: #6D2525;
+      border: none;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      margin-top: 10px;
+    }
+
+    .login-container button:hover {
+      background-color: #3c1515;
+    }
+
+    .switch-form {
+      margin-top: 15px;
+      font-size: 14px;
+      cursor: pointer;
+      color: #6D2525;
+      text-decoration: underline;
+    }
+
+    .error {
+      color: red;
+      margin: 10px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="overlay"></div>
+
+  <div class="login-container">
+    <h2 id="form-title">Login</h2>
+    <form id="auth-form">
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="password" id="password" placeholder="Password" required minlength="6" />
+      <button type="submit" id="submit-btn">Login</button>
+    </form>
+    <p class="error" id="error-msg"></p>
+    <p class="switch-form" id="switch-form">Don't have an account? Sign up here</p>
+  </div>
+
+  <script>
+    const formTitle = document.getElementById('form-title');
+    const authForm = document.getElementById('auth-form');
+    const switchFormText = document.getElementById('switch-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const errorMsg = document.getElementById('error-msg');
+
+    let isLogin = true;
+
+    // Auto-redirect if already logged in
+    if (localStorage.getItem('loggedInUser')) {
+      window.location.href = 'index.html';
+    }
+
+    switchFormText.addEventListener('click', () => {
+      isLogin = !isLogin;
+      if (isLogin) {
+        formTitle.textContent = 'Login';
+        submitBtn.textContent = 'Login';
+        switchFormText.textContent = "Don't have an account? Sign up here";
+        errorMsg.textContent = '';
+      } else {
+        formTitle.textContent = 'Sign Up';
+        submitBtn.textContent = 'Sign Up';
+        switchFormText.textContent = "Already have an account? Login here";
+        errorMsg.textContent = '';
+      }
+    });
+
+    authForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      errorMsg.textContent = '';
+
+      const email = document.getElementById('email').value.trim().toLowerCase();
+      const password = document.getElementById('password').value;
+
+      if (!email || !password) {
+        errorMsg.textContent = 'Please fill out all fields.';
+        return;
+      }
+
+      let users = JSON.parse(localStorage.getItem('users')) || {};
+
+      if (isLogin) {
+        if (users[email] && users[email] === password) {
+          localStorage.setItem('loggedInUser', email);
+          window.location.href = 'index.html';
+        } else {
+          errorMsg.textContent = 'Invalid email or password.';
+        }
+      } else {
+        if (users[email]) {
+          errorMsg.textContent = 'Email already registered. Please login.';
+          return;
+        }
+        users[email] = password;
+        localStorage.setItem('users', JSON.stringify(users));
+        localStorage.setItem('loggedInUser', email);
+        window.location.href = 'index.html';
+      }
+    });
+  </script>
+
+</body>
+</html>

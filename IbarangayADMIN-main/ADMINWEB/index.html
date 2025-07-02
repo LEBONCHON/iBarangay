@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html data-bs-theme="light" lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <title>Dashboard - iBarangay</title>
+    <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i&amp;display=swap">
+    <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
+    <link rel="stylesheet" href="assets/css/Application-Form.css">
+    <link rel="stylesheet" href="assets/css/Banner-Heading-Image-images.css">
+    <style>
+        .sidebar,
+        .sidebar .nav-link,
+        .sidebar .sidebar-brand,
+        .sidebar .sidebar-brand-text,
+        .sidebar .sidebar-brand-icon {
+            color: #000 !important;
+        }
+        .sidebar {
+            background: #C7B98E !important;
+        }
+        .sidebar .nav-link.active {
+            background: rgba(0,0,0,0.1);
+            color: #000 !important;
+        }
+        .sidebar .nav-link i {
+            color: #000 !important;
+        }
+        .sidebar .sidebar-brand-icon img {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            margin-right: 5px;
+        }
+        .sidebar .ibarangay-logo {
+            font-size: 1.6rem;
+            color: #000 !important;
+            margin-right: 5px;
+        }
+        .btn, .btn-warning, .btn-success, .btn-info, .btn-secondary {
+            background: #C7B98E !important;
+            border-color: #C7B98E !important;
+            color: #000 !important;
+        }
+        .btn-primary {
+            background: #E2DABE !important;
+            border-color: #E2DABE !important;
+            color: #000 !important;
+        }
+        .btn-primary:active, .btn-primary:focus, .btn-primary:hover {
+            background: #cfc087 !important;
+            border-color: #cfc087 !important;
+            color: #000 !important;
+        }
+        .btn-c7b98e, .search-btn-custom, #completeRequestBtn {
+            background: #C7B98E !important;
+            border-color: #C7B98E !important;
+            color: #000 !important;
+        }
+        .btn-c7b98e:active, .btn-c7b98e:focus, .btn-c7b98e:hover,
+        .search-btn-custom:active, .search-btn-custom:focus, .search-btn-custom:hover,
+        #completeRequestBtn:active, #completeRequestBtn:focus, #completeRequestBtn:hover {
+            background: #b2a67c !important;
+            border-color: #b2a67c !important;
+            color: #000 !important;
+        }
+    </style>
+</head>
+<body id="page-top">
+<div id="wrapper">
+    <nav class="navbar align-items-start sidebar sidebar-dark accordion p-0 navbar-dark">
+        <div class="container-fluid d-flex flex-column p-0">
+            <a class="navbar-brand d-flex justify-content-center align-items-center sidebar-brand m-0" href="index.html">
+                <div class="sidebar-brand-icon rotate-n-15"><i class="fas fa-laugh-wink" style="color: rgb(0,0,0);"></i></div>
+                <div class="sidebar-brand-text mx-3"><span style="color: rgb(0,0,0);">ibarangay</span></div>
+            </a>
+            <hr class="sidebar-divider my-0">
+            <ul class="navbar-nav text-light" id="accordionSidebar">
+                <li class="nav-item"><a class="nav-link active" href="index.html"><i class="fas fa-tachometer-alt" style="color: rgb(0,0,0);"></i><span style="color: rgb(0,0,0);">Dashboard</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="profile.html"><i class="fas fa-user" style="color: rgb(0,0,0);"></i><span style="color: rgb(0,0,0);">Profile</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="table.html"><i class="fas fa-table" style="color: rgb(0,0,0);"></i><span style="color: rgb(0,0,0);">Orders</span></a></li>
+            </ul>
+            <div class="text-center d-none d-md-inline">
+                <button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button>
+            </div>
+        </div>
+    </nav>
+    <div class="d-flex flex-column" id="content-wrapper">
+        <div id="content">
+            <!-- Topbar -->
+            <nav class="navbar navbar-expand bg-white shadow mb-4 topbar">
+                <div class="container-fluid">
+                    <button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
+                    <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
+                        <div class="input-group">
+                            <input class="bg-light form-control border-0 small" type="text" placeholder="Search for ...">
+                            <button class="btn search-btn-custom py-0" type="button"><i class="fas fa-search"></i></button>
+                        </div>
+                    </form>
+                    <ul class="navbar-nav flex-nowrap ms-auto">
+                        <!-- Alerts Dropdown -->
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="badge bg-danger badge-counter" id="pending-orders-badge">0</span>
+                                <i class="fas fa-bell fa-fw"></i>
+                            </a>
+                            <div class="dropdown-menu dropdown-menu-end dropdown-list animated--grow-in" aria-labelledby="alertsDropdown">
+                                <h6 class="dropdown-header">Pending Orders</h6>
+                                <div id="pending-orders-list"></div>
+                            </div>
+                        </li>
+                        <div class="d-none d-sm-block topbar-divider"></div>
+                        <li class="nav-item dropdown no-arrow">
+                            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="d-none d-lg-inline me-2 text-gray-600 small">Macapagal Luna</span>
+                                <img class="border rounded-circle img-profile" src="assets/img/avatars/avatar1.jpeg">
+                            </a>
+                            <div class="dropdown-menu shadow dropdown-menu-end animated--grow-in">
+                                <a class="dropdown-item" href="profile.html"><i class="fas fa-user fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Profile</a>
+                                <a class="dropdown-item" href="#"><i class="fas fa-cogs fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Settings</a>
+                                <a class="dropdown-item" href="#"><i class="fas fa-list fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Activity log</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="login.html"><i class="fas fa-sign-out-alt fa-sm fa-fw me-2 text-gray-400"></i>&nbsp;Logout</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
+            <!-- End Topbar -->
+
+            <div class="container-fluid">
+                <div class="d-sm-flex justify-content-between align-items-center mb-4">
+                    <h3 class="text-dark mb-0">Dashboard</h3>
+                    <a class="btn btn-c7b98e btn-sm d-none d-sm-inline-block" role="button" id="completeRequestBtn" href="#"><i class="fas fa-download fa-sm text-white-50"></i>Complete Request</a>
+                </div>
+                <div class="row">
+                    <div class="col-md-6 col-xl-4 mb-4">
+                        <div class="card shadow border-left-info py-2">
+                            <div class="card-body">
+                                <div class="row g-0 align-items-center">
+                                    <div class="col me-2">
+                                        <div class="text-uppercase text-info fw-bold text-xs mb-1"><span>Orders Due Today</span></div>
+                                        <div class="text-dark fw-bold h5 mb-0" id="dueTodayCount">0</div>
+                                    </div>
+                                    <div class="col-auto"><i class="fas fa-calendar-day fa-2x text-gray-300"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-4 mb-4">
+                        <div class="card shadow border-left-primary py-2">
+                            <div class="card-body">
+                                <div class="row g-0 align-items-center">
+                                    <div class="col me-2">
+                                        <div class="text-uppercase text-primary fw-bold text-xs mb-1"><span>Orders Completed</span></div>
+                                        <div class="text-dark fw-bold h5 mb-0" id="completedCount">0</div>
+                                    </div>
+                                    <div class="col-auto"><i class="fas fa-check-circle fa-2x text-gray-300"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-6 col-xl-4 mb-4">
+                        <div class="card shadow border-left-warning py-2">
+                            <div class="card-body">
+                                <div class="row g-0 align-items-center">
+                                    <div class="col me-2">
+                                        <div class="text-uppercase text-warning fw-bold text-xs mb-1"><span>Pending Requests</span></div>
+                                        <div class="text-dark fw-bold h5 mb-0" id="pendingCount">0</div>
+                                    </div>
+                                    <div class="col-auto"><i class="fas fa-exclamation-circle fa-2x text-gray-300"></i></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Projects/Order Analytics Section -->
+                <div class="row">
+                    <div class="col-lg-12">
+                        <div class="card shadow mb-4">
+                            <div class="card-header d-flex justify-content-between align-items-center">
+                                <h6 class="text-primary fw-bold m-0">Order Analytics</h6>
+                            </div>
+                            <div class="card-body">
+                                <div class="row" id="orderAnalytics">
+                                    <!-- Dynamic analytics (e.g. category breakdown) will be injected here -->
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Projects/Order Analytics -->
+            </div>
+        </div>
+        <footer class="bg-white sticky-footer">
+            <div class="container my-auto">
+                <div class="text-center my-auto copyright"><span>Copyright © iBarangay 2025</span></div>
+            </div>
+        </footer>
+    </div>
+    <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
+</div>
+<script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script>
+const ORDERS_KEY = "ibarangay_orders";
+function getOrders() {
+    return JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
+}
+function todaysDate() {
+    const d = new Date();
+    return d.getFullYear() + "/" + String(d.getMonth()+1).padStart(2,"0") + "/" + String(d.getDate()).padStart(2,"0");
+}
+function updateDashboardCounts() {
+    const orders = getOrders();
+    const today = todaysDate();
+    let dueToday = 0, completed = 0, pending = 0;
+    for(const order of orders) {
+        if(order.dateRequested === today) dueToday++;
+        if(order.status === "Completed") completed++;
+        if(order.status === "Pending") pending++;
+    }
+    document.getElementById('dueTodayCount').textContent = dueToday;
+    document.getElementById('completedCount').textContent = completed;
+    document.getElementById('pendingCount').textContent = pending;
+    document.getElementById('pending-orders-badge').textContent = pending;
+    // Alerts dropdown
+    const pendingList = document.getElementById('pending-orders-list');
+    if(pendingList) {
+        if(pending === 0) {
+            pendingList.innerHTML = "<div class='px-3 py-2'>No pending orders</div>";
+        } else {
+            pendingList.innerHTML = orders.filter(o=>o.status==="Pending").map(o =>
+                `<div class='px-3 py-1'>#${o.orderNumber} - ${o.name}</div>`
+            ).join('');
+        }
+    }
+}
+function renderOrderAnalytics() {
+    const orders = getOrders();
+    // Example: Show count per category
+    const catMap = {};
+    for(const order of orders) {
+        if(!catMap[order.category]) catMap[order.category] = 0;
+        catMap[order.category]++;
+    }
+    let html = '';
+    if(Object.keys(catMap).length === 0) {
+        html = '<div class="col-12"><em>No order data available.</em></div>';
+    } else {
+        for(const [cat, count] of Object.entries(catMap)) {
+            html += `
+                <div class="col-md-4 mb-3">
+                    <div class="card border-left-info shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-info text-uppercase mb-1">${cat}</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">${count} order(s)</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-folder fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+    }
+    document.getElementById('orderAnalytics').innerHTML = html;
+}
+document.getElementById('completeRequestBtn').onclick = function(e) {
+    e.preventDefault();
+    window.location.href = "table.html";
+};
+window.addEventListener('storage', function(e) {
+    if (e.key === ORDERS_KEY) {
+        updateDashboardCounts();
+        renderOrderAnalytics();
+    }
+});
+updateDashboardCounts();
+renderOrderAnalytics();
+</script>
+</body>
+</html>

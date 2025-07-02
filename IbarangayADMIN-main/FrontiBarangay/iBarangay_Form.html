@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Resident Information Form</title>
+  <style>
+    body {
+      background-color: #E4DABE;
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
+      height: 100vh;
+    }
+    h1 {
+      text-align: center;
+    }
+    .form-container {
+      max-width: 600px;
+      margin: auto;
+      padding: 20px;
+      background-color: whitesmoke;
+      border-radius: 8px;
+      position: relative;
+      z-index: 1;
+    }
+    label {
+      display: block;
+      margin: 10px 0 5px;
+      font-weight: bold;
+    }
+    input, select, textarea {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid black;
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+    button {
+      padding: 10px 15px;
+      background-color: burlywood;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      display: block;
+      margin: auto;
+    }
+    .logo {
+      display: block;
+      margin: auto;
+      max-width: 150px;
+    }
+  </style>
+</head>
+<body>
+
+  <img src="https://app.bploparanaque.com/safetyseal/images/logo.png" alt="City Seal" class="logo" />
+  <h1>RESIDENCY CERTIFICATION</h1>
+
+  <div class="form-container">
+    <form id="residencyForm">
+      
+      <label for="full_name">Full Name:</label>
+      <input type="text" id="full_name" name="full_name" required />
+
+      <label for="date_of_birth">Date of Birth:</label>
+      <input type="date" id="date_of_birth" name="date_of_birth" required />
+
+      <label for="gender">Gender:</label>
+      <select id="gender" name="gender" required>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+
+      <label for="civil_status">Civil Status:</label>
+      <select id="civil_status" name="civil_status" required>
+        <option value="Single">Single</option>
+        <option value="Married">Married</option>
+        <option value="Widowed">Widowed</option>
+        <option value="Annulled">Annulled</option>
+      </select>
+
+      <label for="contact_details">Contact Details:</label>
+      <input type="text" id="contact_details" name="contact_details" />
+
+      <label for="home_address">Home Address:</label>
+      <input type="text" id="home_address" name="home_address" />
+
+      <label for="household_details">Household Details:</label>
+      <textarea id="household_details" name="household_details"></textarea>
+
+      <label for="occupation">Occupation:</label>
+      <input type="text" id="occupation" name="occupation" />
+
+      <label for="employer_details">Employer Details:</label>
+      <input type="text" id="employer_details" name="employer_details" />
+
+      <label for="educational_background">Educational Background:</label>
+      <textarea id="educational_background" name="educational_background"></textarea>
+
+      <label for="barangay_involvement">Barangay Involvement:</label>
+      <textarea id="barangay_involvement" name="barangay_involvement"></textarea>
+
+      <label for="medical_conditions">Medical Conditions:</label>
+      <textarea id="medical_conditions" name="medical_conditions"></textarea>
+
+      <label for="emergency_contacts">Emergency Contacts:</label>
+      <textarea id="emergency_contacts" name="emergency_contacts"></textarea>
+
+      <label for="blood_type">Blood Type:</label>
+      <select id="blood_type" name="blood_type">
+        <option value="A+">A+</option>
+        <option value="A-">A-</option>
+        <option value="B+">B+</option>
+        <option value="B-">B-</option>
+        <option value="O+">O+</option>
+        <option value="O-">O-</option>
+        <option value="AB+">AB+</option>
+        <option value="AB-">AB-</option>
+      </select>
+
+      <label for="length_of_stay">Length of Stay (in years):</label>
+      <input type="number" id="length_of_stay" name="length_of_stay" />
+
+      <label for="previous_residence">Previous Residence:</label>
+      <input type="text" id="previous_residence" name="previous_residence" />
+
+      <label for="proof_of_residency">Proof of Residency:</label>
+      <input type="text" id="proof_of_residency" name="proof_of_residency" />
+
+      <label for="business_permit_number">Business Permit Number:</label>
+      <input type="text" id="business_permit_number" name="business_permit_number" />
+
+      <label for="business_permit_issued_by">Business Permit Issued By:</label>
+      <input type="text" id="business_permit_issued_by" name="business_permit_issued_by" />
+
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('residencyForm').addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const orders = JSON.parse(localStorage.getItem('orders')) || [];
+      const docName = "Certificate of Residency";
+      const docPrice = 50;
+
+      const existing = orders.find(order => order.name === docName);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        orders.push({ name: docName, price: docPrice, qty: 1 });
+      }
+
+      localStorage.setItem('orders', JSON.stringify(orders));
+
+      // Redirect to orders page
+      window.location.href = "orders.html";
+    });
+  </script>
+</body>
+</html>

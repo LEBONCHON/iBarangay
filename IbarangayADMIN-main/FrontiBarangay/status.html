@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Status</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+     <nav>
+    <a href="index.html">
+      <img src="https://app.bploparanaque.com/safetyseal/images/logo.png" alt="City Seal" class="logo" />
+    </a>
+    <div class="nav-links">
+      <a href="index.html">Home</a>
+      <a href="request.html">Request</a>
+      <a href="orders.html">Orders</a>
+      <a href="status.html">Status</a>
+      <a href="contact.html">Contact</a>
+      <a href="profile.html" class="profile-link">
+        <img src="https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png" alt="Profile Photo" class="profile-photo" />
+      </a>
+    </div>
+  </nav>
+
+  <div class="status-container">
+    <div class="status-title">Status:</div>
+
+    <div class="status-header">
+      <div>Product</div>
+      <div>Price</div>
+      <div>Quantity</div>
+      <div>Status</div>
+    </div>
+
+    <div id="status-rows"></div>
+
+    <div class="status-note">
+      *Orders will be ready for pick-up in 3–5 business days
+      <br />
+      <small>Bring any valid Government ID</small>
+    </div>
+  </div>
+
+  <footer class="site-footer">
+  <div class="footer-section">
+    <div>
+      <p>
+        <a href="index.html">Home</a><br>
+        <a href="contact.html">Contact Us</a>
+      </p>
+      <p>help@ibarangay.com<br>(02) 1234-5678</p>
+    </div>
+    <div>
+      <p>
+        <a href="iBaranagy_T&C .html" id="footerUserAgreement">User Agreement</a><br>
+        <a href="iBarangay_T&C .html" id="footerPrivacyPolicy">Privacy Policy</a>
+      </p>
+    </div>
+    <div>
+      <p>Accredited Partner of:<br><strong>iBarangay</strong></p>
+    </div>
+    <div>
+      <p>Powered by:<br><strong>iBarangay</strong></p>
+    </div>
+    <div class="footer-icons">
+      <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png" alt="Facebook" /></a>
+      <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/1200px-Instagram_icon.png" alt="Instagram" /></a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const orders = JSON.parse(localStorage.getItem('orders')) || [];
+  const statusContainer = document.getElementById('status-rows');
+
+  let grandTotal = 0;
+
+  if (orders.length === 0) {
+    statusContainer.innerHTML = `<div style="padding: 20px; text-align: center;">No orders found.</div>`;
+  } else {
+    orders.forEach(order => {
+      const total = order.price * order.qty;
+      grandTotal += total;
+
+      const row = document.createElement('div');
+      row.className = 'status-row';
+      row.innerHTML = `
+        <div class="status-product">
+          <img src="https://img.icons8.com/ios/50/document--v1.png" alt="doc" />
+          ${order.name}
+        </div>
+        <div>
+          ₱${order.price}<br><small>Total: ₱${total}</small>
+        </div>
+        <div>${order.qty}</div>
+        <div class="status-pending">Pending</div>
+      `;
+      statusContainer.appendChild(row);
+    });
+
+    const totalRow = document.createElement('div');
+    totalRow.className = 'status-row';
+    totalRow.innerHTML = `
+      <div></div>
+      <div style="text-align: right; font-weight: bold;">Grand Total: ₱${grandTotal}</div>
+      <div></div>
+      <div></div>
+    `;
+    statusContainer.appendChild(totalRow);
+  }
+</script>
+
+
+</body>
+</html>
