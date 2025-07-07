@@ -71,41 +71,44 @@
   </div>
 </footer>
 
-  <script>
-    // Sample orders - replace with dynamic data from server/localStorage if needed
-const orders = [
-  { id: 'BRGY-001', date: '2025-05-01', status: 'Completed' },
-  { id: 'BRGY-002', date: '2025-05-15', status: 'Processing' },
-  { id: 'BRGY-003', date: '2025-05-20', status: 'Cancelled' }
-];
+  <script src="js/api.js"></script>
+<script>
+  // Sample orders - replace with dynamic data from server/localStorage if needed
+  const orders = [
+    { id: 'BRGY-001', date: '2025-05-01', status: 'Completed' },
+    { id: 'BRGY-002', date: '2025-05-15', status: 'Processing' },
+    { id: 'BRGY-003', date: '2025-05-20', status: 'Cancelled' }
+  ];
 
-const orderList = document.getElementById('order-list');
-if (orders.length === 0) {
-  orderList.innerHTML = '<li>No orders yet.</li>';
-} else {
-  orderList.innerHTML = '';
-  orders.forEach(order => {
-    orderList.innerHTML += `
-      <li>
-        <strong>Order ID:</strong> ${order.id}<br>
-        <strong>Date:</strong> ${order.date}<br>
-        <strong>Status:</strong> ${order.status}
-      </li>`;
-  });
-}
-    const emailDisplay = document.getElementById('user-email');
-    const loggedInUser = localStorage.getItem('loggedInUser');
+  const orderList = document.getElementById('order-list');
+  if (orders.length === 0) {
+    orderList.innerHTML = '<li>No orders yet.</li>';
+  } else {
+    orderList.innerHTML = '';
+    orders.forEach(order => {
+      orderList.innerHTML += `
+        <li>
+          <strong>Order ID:</strong> ${order.id}<br>
+          <strong>Date:</strong> ${order.date}<br>
+          <strong>Status:</strong> ${order.status}
+        </li>`;
+    });
+  }
 
-    if (!loggedInUser) {
-      window.location.href = 'login.html'; // Redirect if not logged in
-    } else {
-      emailDisplay.textContent = loggedInUser;
-    }
+  const emailDisplay = document.getElementById('user-email');
+  
+  // Check if user is logged in
+  if (!isLoggedIn()) {
+    window.location.href = 'login.html'; // Redirect if not logged in
+  } else {
+    const user = getCurrentUser();
+    emailDisplay.textContent = user ? (user.email || user.username) : 'Unknown User';
+  }
 
-    function logout() {
-      localStorage.removeItem('loggedInUser');
-      window.location.href = 'login.html';
-    }
-  </script>
+  function logout() {
+    logoutUser();
+  }
+</script>
+
 </body>
 </html>

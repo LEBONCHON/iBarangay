@@ -70,5 +70,12 @@
     </div>
   </div>
 </footer>
+<script src="js/api.js"></script>
+<script>
+  // Check if user is logged in
+  if (!isLoggedIn()) {
+    window.location.href = 'login.html'; // Redirect to login page if not logged in
+  }
+</script>
 </body>
 </html>

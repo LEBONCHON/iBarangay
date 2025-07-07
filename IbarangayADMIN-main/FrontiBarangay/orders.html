@@ -73,6 +73,10 @@
 
 
   <script>
+// Check if user is logged in
+if (!isLoggedIn()) {
+  window.location.href = 'login.html'; // Redirect to login page if not logged in
+}
   function loadOrders() {
     const orderList = document.getElementById('order-list');
     orderList.innerHTML = '';
