@@ -1,0 +1,12 @@
+[{
+  "_id": {
+    "$oid": "686e0c63bce62006aa8c7227"
+  },
+  "title": "Scheduled Brownout",
+  "message": "There will be a scheduled power interruption on July 10 from 8AM to 5PM.",
+  "postedBy": "686e0b20bce62006aa8c7215",
+  "createdAt": {
+    "$date": "2025-07-09T00:00:00.000Z"
+  },
+  "isPublic": true
+}]

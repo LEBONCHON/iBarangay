@@ -1,5 +1,11 @@
 // API connection for iBarangay
-const API_URL = 'http://localhost:3000/api';
+fetch('http://localhost:3000/api/users/login', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ email: 'admin@ibarangay.com', password: 'admin123' })
+})
+.then(res => res.json())
+.then(data => console.log(data));
 
 // Register new user
 async function registerUser(userData) {
