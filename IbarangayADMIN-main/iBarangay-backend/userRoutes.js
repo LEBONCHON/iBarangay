@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const auth = require('./authMiddleware');
 const User = require('./userModel');
 const jwt = require('jsonwebtoken');
 
@@ -8,22 +9,13 @@ router.get('/test', (req, res) => {
   res.json({ message: 'User routes working' });
 });
 
-// Register a new user (frontBarangay only)
+// Register a new resident user (default role)
 router.post('/register', async (req, res) => {
   try {
     console.log('Registration request received:', req.body);
-    
-    // Extract fields with clear logging
+
     const { username, password, firstName, lastName, email } = req.body;
-    console.log('Extracted fields:', { 
-      username, 
-      password: '***', // Don't log actual password
-      firstName, 
-      lastName, 
-      email 
-    });
-    
-    // Validate required fields
+
     if (!username || !password || !email) {
       console.log('Missing required fields');
       return res.status(400).json({
@@ -31,39 +23,37 @@ router.post('/register', async (req, res) => {
         message: 'Username, password, and email are required'
       });
     }
-    
-    // Check if user already exists
-    const existingUser = await User.findOne({ 
-      $or: [{ username }, { email }] 
+
+    const existingUser = await User.findOne({
+      $or: [{ username }, { email }]
     });
-    
+
     if (existingUser) {
       console.log('User already exists');
-      return res.status(400).json({ 
-        success: false, 
-        message: 'Username or email already in use' 
+      return res.status(400).json({
+        success: false,
+        message: 'Username or email already in use'
       });
     }
-    
-    // Create new user
-    console.log('Creating new user...');
+
+    // Create new user with default role "resident"
     const newUser = new User({
       username,
-      password, // Will be hashed by the pre-save hook
+      password,
       firstName: firstName || '',
       lastName: lastName || '',
-      email
+      email,
+      role: 'resident' // default role
     });
-    
-    console.log('Saving user...');
+
     await newUser.save();
-    console.log('User saved successfully');
-    
+    console.log('User registered successfully');
+
     res.status(201).json({
       success: true,
       message: 'User registered successfully'
     });
-    
+
   } catch (error) {
     console.error('Registration error:', error);
     res.status(500).json({
@@ -73,52 +63,48 @@ router.post('/register', async (req, res) => {
   }
 });
 
-// Login for frontBarangay users
+// Login for both admin and resident (with username OR email)
 router.post('/login', async (req, res) => {
   try {
-    console.log('Login request received:', { 
-      username: req.body.username,
-      password: '***' // Don't log actual password
-    });
-    
-    const { username, password } = req.body;
-    
-    if (!username || !password) {
+    // Accept either username or email for login
+    const { username, email, password } = req.body;
+
+    if ((!username && !email) || !password) {
       return res.status(400).json({
         success: false,
-        message: 'Username and password are required'
+        message: 'Username or email and password are required'
       });
     }
-    
-    // Find user
-    const user = await User.findOne({ username });
+
+    const user = await User.findOne(
+      username ? { username } : { email }
+    );
+
     if (!user) {
       console.log('User not found');
       return res.status(401).json({
         success: false,
-        message: 'Invalid username or password'
+        message: 'Invalid username/email or password'
       });
     }
-    
-    // Validate password
+
     const isMatch = await user.comparePassword(password);
     if (!isMatch) {
       console.log('Invalid password');
       return res.status(401).json({
         success: false,
-        message: 'Invalid username or password'
+        message: 'Invalid username/email or password'
       });
     }
-    
-    console.log('Login successful for user:', username);
-    
-    // Generate JWT token
+
     const token = jwt.sign(
-      { id: user._id },
+      { id: user._id, role: user.role },
       process.env.JWT_SECRET,
       { expiresIn: '1d' }
     );
-    
+
+    const redirectUrl = user.role === 'admin' ? '/adminWebApp' : '/ibarangayFront';
+
     res.status(200).json({
       success: true,
       message: 'Login successful',
@@ -128,10 +114,12 @@ router.post('/login', async (req, res) => {
         username: user.username,
         firstName: user.firstName,
         lastName: user.lastName,
-        email: user.email
-      }
+        email: user.email,
+        role: user.role
+      },
+      redirectUrl
     });
-    
+
   } catch (error) {
     console.error('Login error:', error);
     res.status(500).json({

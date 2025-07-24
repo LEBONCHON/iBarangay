@@ -5,111 +5,67 @@
   <title>Request</title>
   <link rel="stylesheet" href="styles.css">
   <style>
-    /* Existing styles, plus some basic modal styling for forms */
-    .modal-form-overlay {
-      display: none; /* Hidden by default */
-      position: fixed; /* Stay in place */
-      z-index: 9999; /* Sit on top */
-      left: 0;
-      top: 0;
-      width: 100%;
-      height: 100%;
-      overflow: auto; /* Enable scroll if needed */
-      background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
-    }
-
-    .modal-form-content {
-      background-color: #fff;
-      margin: 5% auto;
-      padding: 20px;
-      border: 1px solid #cfd8dd;
-      width: 80%;
-      max-width: 900px;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.4);
-      position: relative;
-    }
-
-    .close-form-modal {
-      color: #aaa;
-      float: right;
-      font-size: 28px;
-      font-weight: bold;
+    /* Modern button styles */
+    .modern-btn {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      font-weight: 600;
       cursor: pointer;
-    }
-
-    .close-form-modal:hover,
-    .close-form-modal:focus {
-      color: #000;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    .hidden {
-      display: none;
+      transition: all 0.3s ease;
+      margin: 0 10px;
     }
     
-    /* Form styles */
-    .section {
-      margin-bottom: 20px;
-      border-bottom: 1px solid #eee;
-      padding-bottom: 15px;
-    }
-    
-    .section h2 {
-      margin-bottom: 15px;
+    .reset-btn {
+      background-color: #f1f1f1;
       color: #333;
     }
     
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 15px;
-      margin-bottom: 10px;
+    .reset-btn:hover {
+      background-color: #e0e0e0;
     }
     
-    label {
-      display: block;
-      margin-bottom: 5px;
-      font-weight: 500;
-    }
-    
-    label.required:after {
-      content: " *";
-      color: red;
-    }
-    
-    input, select, textarea {
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      width: 100%;
-    }
-    
-    .note {
-      font-size: 12px;
-      color: #666;
-    }
-    
-    button {
-      padding: 8px 16px;
-      background-color: #1a73e8;
+    .submit-btn {
+      background-color: #4CAF50;
       color: white;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
     }
     
-    button:hover {
-      background-color: #0d5bcd;
+    .submit-btn:hover {
+      background-color: #45a049;
     }
     
-    .debug-info {
+    /* Post-submission actions panel */
+    .post-submission-actions {
+      display: none;
       margin-top: 20px;
-      padding: 10px;
+      padding: 15px;
       background-color: #f8f9fa;
+      border-left: 4px solid #4CAF50;
       border-radius: 4px;
-      font-size: 12px;
-      color: #6c757d;
+    }
+    
+    .post-submission-actions p {
+      margin-bottom: 15px;
+      font-size: 16px;
+    }
+    
+    .action-buttons {
+      display: flex;
+      gap: 10px;
+    }
+    
+    .another-btn {
+      background-color: #f1f1f1;
+      color: #333;
+    }
+    
+    .checkout-btn {
+      background-color: #007bff;
+      color: white;
+    }
+    
+    .checkout-btn:hover {
+      background-color: #0069d9;
     }
   </style>
 </head>
@@ -134,19 +90,17 @@
     <h2>Choose Document Type</h2>
 
     <div class="document-options">
-      <button class="btn" id="residencyBtn" disabled>Certificate of Residency</button>
-      <button class="btn" id="businessBtn" disabled>Business Clearance</button>
-      <button class="btn" id="barangayBtn" disabled>Barangay ID</button>
+      <button class="btn" id="btn1" disabled>Certificate of Residency</button>
+      <button class="btn" id="btn2" disabled>Barangay ID</button>
     </div>
 
     <div class="checkboxes">
       <label>
         <input type="checkbox" class="agreement-checkbox" />
         I accept the 
-        <a href="iBarangay_T&C.html" id="openTerms">Terms and Conditions</a> of the User Agreement and 
-        <a href="iBarangay_T&C.html" id="openPrivacy">Privacy Policy</a>
+        <a href="iBarangay_T&C .html" id="openTerms">Terms and Conditions</a> of the User Agreement and 
+        <a href="iBarangay_T&C .html" id="openPrivacy">Privacy Policy</a>
       </label>
-      <br>
       <label>
         <input type="checkbox" class="agreement-checkbox" />
         I consent to the processing of my personal data in accordance with the Data
@@ -154,830 +108,649 @@
       </label>
     </div>
     
-    <div class="debug-info" id="debug-info"></div>
-  </div>
-
-  <!-- Modal Structure (Terms/Privacy) -->
-  <div id="modal" class="modal">
+     <div id="residencyModal" class="modal">
     <div class="modal-content">
-      <span class="close-button">&times;</span>
-      <div id="modalBody"></div>
-    </div>
-  </div>
-
-  <!-- ======================================================================== -->
-  <!-- Residency Form Modal - FIXED VERSION -->
-  <div id="residencyModal" class="modal-form-overlay">
-    <div class="modal-form-content">
-      <span class="close-form-modal" id="closeResidencyModal">&times;</span>
-      
-      <form id="residentForm" action="javascript:void(0);" style="margin-top:20px;">
-        <img src="https://app.bploparanaque.com/safetyseal/images/logo.png" alt="City Seal" class="logo" width="50" height="auto" />
-        <h1 style="text-align:center;">RESIDENCY CERTIFICATE APPLICATION</h1>
-        <p style="text-align:center;">Fill out all required fields completely and accurately</p>
+    <span class="close-button" onclick="closeResidencyModal()">&times;</span>
+    <!-- Residency Certificate Form -->
+    <form id="residentForm" class="hidden" action="javascript:void(0);">
+        <img src="https://app.bploparanaque.com/safetyseal/images/logo.png" alt="City Seal" class="logo" width="50" height="auto">
+        <h1 style="text-align: center;">RESIDENCY CERTIFICATE APPLICATION</h1>
+        <p style="text-align: center;">Fill out all required fields completely and accurately</p>
 
         <!-- Personal Information Section -->
         <section class="section" id="personalInfo">
-          <h2>Personal Information</h2>
-          <div class="row" style="display:flex;flex-wrap:wrap;gap:15px;">
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_LastName" class="required">Last Name</label>
-              <input type="text" id="res_LastName" name="res_LastName" required />
+            <h2>Personal Information</h2>
+            <div class="row">
+                <div>
+                    <label for="res_LastName" class="required">Last Name</label>
+                    <input type="text" id="res_LastName" name="res_LastName" required>
+                </div>
+                <div>
+                    <label for="res_FirstName" class="required">First Name</label>
+                    <input type="text" id="res_FirstName" name="res_FirstName" required>
+                </div>
+                <div>
+                    <label for="res_MiddleName">Middle Name</label>
+                    <input type="text" id="res_MiddleName" name="res_MiddleName">
+                </div>
+                <div>
+                    <label for="res_DateOfBirth" class="required">Date of Birth</label>
+                    <input type="date" id="res_DateOfBirth" name="res_DateOfBirth" required>
+                </div>
+                <div>
+                    <label for="res_PlaceOfBirth" class="required">Place of Birth</label>
+                    <input type="text" id="res_PlaceOfBirth" name="res_PlaceOfBirth" required>
+                </div>
+                <div>
+                    <label for="res_CountryOfBirth" class="required">Country of Birth</label>
+                    <input type="text" id="res_CountryOfBirth" name="res_CountryOfBirth" required>
+                </div>
+                <div>
+                    <label for="res_Sex" class="required">Sex</label>
+                    <select id="res_Sex" name="res_Sex" required>
+                        <option value="">Choose</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="res_CivilStatus" class="required">Civil Status</label>
+                    <select id="res_CivilStatus" name="res_CivilStatus" required>
+                        <option value="">Choose</option>
+                        <option value="Single">Single</option>
+                        <option value="Married">Married</option>
+                        <option value="Widowed">Widowed</option>
+                        <option value="Annulled">Annulled</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="res_BloodType">Blood Type</label>
+                    <select id="res_BloodType" name="res_BloodType">
+                        <option value="">Choose</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="res_Nationality" class="required"> Nationality</label>
+                    <input type="text" id="res_Nationality" name="res_Nationality">
+                </div>
             </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_MiddleName">Middle Name</label>
-              <input type="text" id="res_MiddleName" name="res_MiddleName" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_FirstName" class="required">First Name</label>
-              <input type="text" id="res_FirstName" name="res_FirstName" required />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_DateOfBirth" class="required">Date of Birth</label>
-              <input type="date" id="res_DateOfBirth" name="res_DateOfBirth" required />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_PlaceOfBirth" class="required">Place of Birth</label>
-              <input type="text" id="res_PlaceOfBirth" name="res_PlaceOfBirth" required />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_CountryOfBirth" class="required">Country of Birth</label>
-              <input type="text" id="res_CountryOfBirth" name="res_CountryOfBirth" required />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_Sex" class="required">Sex</label>
-              <select id="res_Sex" name="res_Sex" required>
-                <option value="">Choose</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_CivilStatus" class="required">Civil Status</label>
-              <select id="res_CivilStatus" name="res_CivilStatus" required>
-                <option value="">Choose</option>
-                <option value="Single">Single</option>
-                <option value="Married">Married</option>
-                <option value="Widowed">Widowed</option>
-                <option value="Annulled">Annulled</option>
-              </select>
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_BloodType">Blood Type</label>
-              <select id="res_BloodType" name="res_BloodType">
-                <option value="">Choose</option>
-                <option value="A+">A+</option>
-                <option value="A-">A-</option>
-                <option value="B+">B+</option>
-                <option value="B-">B-</option>
-                <option value="O+">O+</option>
-                <option value="O-">O-</option>
-                <option value="AB+">AB+</option>
-                <option value="AB-">AB-</option>
-              </select>
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_CurrentNationality" class="required">Current Nationality</label>
-              <input type="text" id="res_CurrentNationality" name="res_CurrentNationality" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_OriginalNationality">Original Nationality</label>
-              <input type="text" id="res_OriginalNationality" name="res_OriginalNationality" />
-            </div>
-          </div>
         </section>
 
         <!-- Address Information Section -->
         <section class="section" id="addressInfo">
-          <h2>Address Information</h2>
-          <div class="row" style="display:flex;flex-wrap:wrap;gap:15px;">
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_HouseNumber" class="required">House/Building Number</label>
-              <input type="text" id="res_HouseNumber" name="res_HouseNumber" />
+            <h2>Address Information</h2>
+            <div class="row">
+                <div>
+                    <label for="res_HouseNumber" class="required">House/Building Number</label>
+                    <input type="text" id="res_HouseNumber" name="res_HouseNumber">
+                </div>
+                <div>
+                    <label for="res_Street" class="required">Street</label>
+                    <input type="text" id="res_Street" name="res_Street">
+                </div>
+                <div>
+                    <label for="res_Subdivision">Subdivision/Village</label>
+                    <input type="text" id="res_Subdivision" name="res_Subdivision">
+                </div>
+                <div>
+                    <label for="res_Barangay" class="required">Barangay</label>
+                    <input type="text" id="res_Barangay" name="res_Barangay">
+                </div>
+                <div>
+                    <label for="res_CityMunicipality" class="required">City/Municipality</label>
+                    <input type="text" id="res_CityMunicipality" name="res_CityMunicipality">
+                </div>
+                <div>
+                    <label for="res_Province" class="required">Province</label>
+                    <input type="text" id="res_Province" name="res_Province">
+                </div>
+                <div>
+                    <label for="res_PostalCode">Postal Code</label>
+                    <input type="text" id="res_PostalCode" name="res_PostalCode">
+                </div>
+                
             </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_Street" class="required">Street</label>
-              <input type="text" id="res_Street" name="res_Street" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_Subdivision">Subdivision/Village</label>
-              <input type="text" id="res_Subdivision" name="res_Subdivision" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_Barangay" class="required">Barangay</label>
-              <input type="text" id="res_Barangay" name="res_Barangay" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_CityMunicipality" class="required">City/Municipality</label>
-              <input type="text" id="res_CityMunicipality" name="res_CityMunicipality" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_Province" class="required">Province</label>
-              <input type="text" id="res_Province" name="res_Province" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_PostalCode">Postal Code</label>
-              <input type="text" id="res_PostalCode" name="res_PostalCode" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_Country">Country</label>
-              <input type="text" id="res_Country" name="res_Country" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_LengthOfStay" class="required">Length of Stay (years)</label>
-              <input type="text" id="res_LengthOfStay" name="res_LengthOfStay" />
-            </div>
-          </div>
         </section>
 
         <!-- Contact Information Section -->
         <section class="section" id="contactInfo">
-          <h2>Contact Information</h2>
-          <div class="row" style="display:flex;flex-wrap:wrap;gap:15px;">
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_ContactDetails" class="required">Contact Number</label>
-              <input type="tel" id="res_ContactDetails" name="res_ContactDetails" placeholder="Mobile/Phone Number" />
+            <h2>Contact Information</h2>
+            <div class="row">
+                <div>
+                    <label for="res_ContactDetails" class="required">Contact Number</label>
+                    <input type="tel" id="res_ContactDetails" name="res_ContactDetails" placeholder="Mobile/Phone Number">
+                </div>
+                <div>
+                    <label for="res_EmailAddress">Email Address</label>
+                    <input type="email" id="res_EmailAddress" name="res_EmailAddress">
+                </div>
+                <div>
+                    <label for="res_EmergencyContact">Emergency Contact</label>
+                    <input type="text" id="res_EmergencyContact" name="res_EmergencyContact"">
+                </div>
             </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_EmailAddress">Email Address</label>
-              <input type="email" id="res_EmailAddress" name="res_EmailAddress" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="res_EmergencyContact">Emergency Contact</label>
-              <textarea
-                id="res_EmergencyContact"
-                name="res_EmergencyContact"
-                rows="1"
-              ></textarea>
-            </div>
-          </div>
         </section>
 
         <!-- Household Information Section -->
         <section class="section" id="householdInfo">
-          <h2>Household Information</h2>
-          <div class="row" style="display:flex;flex-wrap:wrap;gap:15px;">
-            <div style="flex:2;display:flex;flex-direction:column;">
-              <label for="res_HouseholdDetails">Household Members</label>
-              <textarea
-                id="res_HouseholdDetails"
-                name="res_HouseholdDetails"
-                rows="4"
-                placeholder="List all household members with their relationship to you"
-              ></textarea>
+            <h2>Household Information</h2>
+            <div class="row">
+                <div style="flex: 2;">
+                    <label for="res_HouseholdDetails">Household Members</label>
+                    <textarea id="res_HouseholdDetails" name="res_HouseholdDetails" rows="4" placeholder="List all household members with their relationship to you"></textarea>
+                </div>
             </div>
-          </div>
         </section>
 
         <!-- Community & Health Section -->
         <section class="section" id="communityHealth">
-          <h2>Community & Health</h2>
-          <div class="row" style="display:flex;flex-wrap:wrap;gap:15px;">
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="res_BarangayInvolvement">Barangay Involvement</label>
-              <textarea
-                id="res_BarangayInvolvement"
-                name="res_BarangayInvolvement"
-                rows="3"
-                placeholder="List any community organizations, committees, or activities you're involved in"
-              ></textarea>
+            <h2>Community & Health</h2>
+            <div class="row">
+                <div>
+                    <label for="res_BarangayInvolvement">Barangay Involvement</label>
+                    <textarea id="res_BarangayInvolvement" name="res_BarangayInvolvement" rows="3" placeholder="List any community organizations, committees, or activities you're involved in"></textarea>
+                </div>
+                <div>
+                    <label for="res_MedicalConditions">Medical Conditions</label>
+                    <textarea id="res_MedicalConditions" name="res_MedicalConditions" rows="3" placeholder="List any known medical conditions, allergies, or special needs"></textarea>
+                </div>
             </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="res_MedicalConditions">Medical Conditions</label>
-              <textarea
-                id="res_MedicalConditions"
-                name="res_MedicalConditions"
-                rows="3"
-                placeholder="List any known medical conditions, allergies, or special needs"
-              ></textarea>
-            </div>
-          </div>
         </section>
 
-        <!-- Proof of Residency Documents -->
-        <section class="section" id="documentSection">
-          <h2>Required Documents</h2>
-          <div class="row" style="display:flex;flex-wrap:wrap;gap:15px;">
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="res_ValidID" class="required">Valid Government ID</label>
-              <div class="file-input-container">
-                <input
-                  type="file"
-                  id="res_ValidID"
-                  name="res_ValidID"
-                  accept="image/*,.pdf"
-                />
-              </div>
-              <small class="note">(Passport, Driver's License, UMID, etc.)</small>
+         <section class="section" id="documentSection">
+            <h2>Required Documents</h2>
+            <div class="row">
+                <div>
+                    <label for="res_ValidID" class="required">Valid Government ID</label>
+                    <div class="file-input-container">
+                        <input type="file" id="res_ValidID" name="res_ValidID" accept="image/*,.pdf">
+                    </div>
+                    <small class="note">(Passport, Driver's License, UMID, etc.)</small>
+                </div>
+                <div>
+                    <label for="res_ProofOfResidency" class="required">Proof of Residency</label>
+                    <div class="file-input-container">
+                        <input type="file" id="res_ProofOfResidency" name="res_ProofOfResidency" accept="image/*,.pdf">
+                    </div>
+                    <small class="note">(Utility bill, lease agreement, etc.)</small>
+                </div>
+                <div>
+                    <label for="res_BarangayClearance" class="required">Barangay Clearance</label>
+                    <div class="file-input-container">
+                        <input type="file" id="res_BarangayClearance" name="res_BarangayClearance" accept="image/*,.pdf">
+                    </div>
+                </div>
             </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="res_ProofOfResidency" class="required">Proof of Residency</label>
-              <div class="file-input-container">
-                <input
-                  type="file"
-                  id="res_ProofOfResidency"
-                  name="res_ProofOfResidency"
-                  accept="image/*,.pdf"
-                />
-              </div>
-              <small class="note">(Utility bill, lease agreement, etc.)</small>
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="res_BarangayClearance" class="required">Barangay Clearance</label>
-              <div class="file-input-container">
-                <input
-                  type="file"
-                  id="res_BarangayClearance"
-                  name="res_BarangayClearance"
-                  accept="image/*,.pdf"
-                />
-              </div>
-            </div>
-          </div>
         </section>
 
         <!-- Declaration -->
         <section class="section">
-          <div>
-            <label class="required"
-              ><input
-                type="checkbox"
-                id="res_declaration"
-                name="res_declaration"
-              />
-              I hereby certify that I am a resident of the barangay and that all
-              information provided in this application is true and correct to the
-              best of my knowledge. I understand that any false information may
-              result in disqualification of my application or revocation of my
-              residency certification.</label
-            >
-          </div>
+            <div>
+                <label class="required"><input type="checkbox" id="res_declaration" name="res_declaration"> I hereby certify that I am a resident of the barangay and that all information provided in this application is true and correct to the best of my knowledge. I understand that any false information may result in disqualification of my application or revocation of my residency certification.</label>
+            </div>
         </section>
 
-        <div style="margin-top:10px;display:flex;justify-content:end;gap:10px;">
-          <button type="reset">Reset Form</button>
-          <button type="submit">Submit Information</button>
+        <div class="mt-8 flex justify-end space-x-4">
+            <button type="reset" class="modern-btn reset-btn">Reset Form</button>
+            <button type="submit" class="modern-btn submit-btn">Submit Information</button>
         </div>
-      </form>
-    </div>
+        
+        <!-- Post-submission actions section (hidden by default) -->
+        <div id="res-post-actions" class="post-submission-actions">
+            <p>Certificate of Residency has been added to your orders.</p>
+            <p>What would you like to do next?</p>
+            <div class="action-buttons">
+                <button type="button" id="res-another-btn" class="modern-btn another-btn">Make Another Request</button>
+                <button type="button" id="res-checkout-btn" class="modern-btn checkout-btn">Proceed to Checkout</button>
+            </div>
+        </div>
+    </form>
+  </div>
   </div>
 
-  <!-- Barangay ID Form Modal - FIXED VERSION -->
-  <div id="barangayIdModal" class="modal-form-overlay">
-    <div class="modal-form-content">
-      <span class="close-form-modal" id="closeBarangayModal">&times;</span>
-      
-      <form id="barangayIDFormMain" action="javascript:void(0);" style="margin-top:20px;">
-        <img
-          src="https://app.bploparanaque.com/safetyseal/images/logo.png"
-          alt="City Seal"
-          class="logo"
-          width="50"
-          height="auto"
-        />
-        <h1 style="text-align:center;">BARANGAY IDENTIFICATION CARD APPLICATION</h1>
-        <p style="text-align:center;">
-          Fill out all required fields completely and accurately
-        </p>
+  <!----BARANGAY ID---->
+   <div id="barangayIDModal" class="modal">
+  <div class="modal-content">
+    <span class="close-button" onclick="closeBarangayIDModal()">&times;</span>
+    <!-- Barangay ID Form -->
+    <form id="barangayIDForm" class="hidden" action="javascript:void(0);">
+        <img src="https://app.bploparanaque.com/safetyseal/images/logo.png" alt="City Seal" class="logo" width="50" height="auto">
+        <h1 style="text-align: center;">BARANGAY IDENTIFICATION CARD APPLICATION</h1>
+        <p style="text-align: center;">Fill out all required fields completely and accurately</p>
 
         <!-- Personal Information Section -->
         <section class="section" id="personalInfo">
-          <h2>Personal Information</h2>
-          <div class="row" style="display:flex;flex-wrap:wrap;gap:15px;">
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="bar_LastName" class="required">Last Name</label>
-              <input type="text" id="bar_LastName" name="bar_LastName" />
+            <h2>Personal Information</h2>
+            <div class="row">
+                <div>
+                    <label for="bar_LastName" class="required">Last Name</label>
+                    <input type="text" id="bar_LastName" name="bar_LastName">
+                </div>
+                <div>
+                    <label for="bar_FirstName" class="required">First Name</label>
+                    <input type="text" id="bar_FirstName" name="bar_FirstName">
+                </div>
+                <div>
+                    <label for="bar_MiddleName">Middle Name</label>
+                    <input type="text" id="bar_MiddleName" name="bar_MiddleName">
+                </div>
+                <div>
+                    <label for="bar_DateOfBirth" class="required">Date of Birth</label>
+                    <input type="date" id="bar_DateOfBirth" name="bar_DateOfBirth">
+                </div>
+                <div>
+                    <label for="bar_PlaceOfBirth" class="required">Place of Birth</label>
+                    <input type="text" id="bar_PlaceOfBirth" name="bar_PlaceOfBirth">
+                </div>
+                <div>
+                    <label for="bar_Age" class="required">Age</label>
+                    <input type="number" id="bar_Age" name="bar_Age">
+                </div>
+                <div>
+                    <label for="bar_Sex" class="required">Sex</label>
+                    <select id="bar_Sex" name="bar_Sex">
+                        <option value="">Choose</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="bar_CivilStatus" class="required">Civil Status</label>
+                    <select id="bar_CivilStatus" name="bar_CivilStatus">
+                        <option value="">Choose</option>
+                        <option value="Single">Single</option>
+                        <option value="Married">Married</option>
+                        <option value="Widowed">Widowed</option>
+                        <option value="Annulled">Annulled</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="bar_citizenship" class="required">Citizenship</label>
+                    <input type="text" id="bar_citizenship" name="bar_citizenship">
+                </div>
+                <div>
+                    <label for="bar_eyeColor">Eye Color</label>
+                    <input type="text" id="bar_eyeColor" name="bar_eyeColor">
+                </div>
+                <div>
+                    <label for="bar_height">Height (cm)</label>
+                    <input type="number" id="bar_height" name="bar_height">
+                </div>
+                <div>
+                    <label for="bar_weight">Weight (kg)</label>
+                    <input type="number" id="bar_weight" name="bar_weight">
+                </div>
+                <div>
+                    <label for="bar_BloodType">Blood Type</label>
+                    <select id="bar_BloodType" name="bar_BloodType">
+                        <option value="">Choose</option>
+                        <option value="A+">A+</option>
+                        <option value="A-">A-</option>
+                        <option value="B+">B+</option>
+                        <option value="B-">B-</option>
+                        <option value="O+">O+</option>
+                        <option value="O-">O-</option>
+                        <option value="AB+">AB+</option>
+                        <option value="AB-">AB-</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="bar_TypeOfResidency" class="required">Type of Residency</label>
+                    <select id="bar_TypeOfResidency" name="bar_TypeOfResidency">
+                        <option value="">Choose</option>
+                        <option value="Homeowner">Homeowner</option>
+                        <option value="Renter">Renter</option>
+                        <option value="Boarder">Boarder</option>
+                        <option value="Tenant">Tenant</option>
+                    </select>
+                </div>
+                <div>
+                    <label for="bar_DateOfRegistration">Date of Registration</label>
+                    <input type="date" id="bar_DateOfRegistration" name="bar_DateOfRegistration">
+                </div>
             </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="bar_MiddleName">Middle Name</label>
-              <input type="text" id="bar_MiddleName" name="bar_MiddleName" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="bar_FirstName" class="required">First Name</label>
-              <input type="text" id="bar_FirstName" name="bar_FirstName" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="bar_DateOfBirth" class="required">Date of Birth</label>
-              <input type="date" id="bar_DateOfBirth" name="bar_DateOfBirth" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="bar_PlaceOfBirth" class="required"
-                >Place of Birth</label
-              >
-              <input
-                type="text"
-                id="bar_PlaceOfBirth"
-                name="bar_PlaceOfBirth"
-              />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="bar_Age" class="required">Age</label>
-              <input type="number" id="bar_Age" name="bar_Age" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="bar_Sex" class="required">Sex</label>
-              <select id="bar_Sex" name="bar_Sex">
-                <option value="">Choose</option>
-                <option value="Male">Male</option>
-                <option value="Female">Female</option>
-                <option value="Other">Other</option>
-              </select>
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="bar_CivilStatus" class="required">Civil Status</label>
-              <select id="bar_CivilStatus" name="bar_CivilStatus">
-                <option value="">Choose</option>
-                <option value="Single">Single</option>
-                <option value="Married">Married</option>
-                <option value="Widowed">Widowed</option>
-                <option value="Annulled">Annulled</option>
-              </select>
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="bar_citizenship" class="required">Citizenship</label>
-              <input type="text" id="bar_citizenship" name="bar_citizenship" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="bar_eyeColor">Eye Color</label>
-              <input type="text" id="bar_eyeColor" name="bar_eyeColor" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="bar_height">Height (cm)</label>
-              <input type="number" id="bar_height" name="bar_height" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="bar_weight">Weight (kg)</label>
-              <input type="number" id="bar_weight" name="bar_weight" />
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="bar_BloodType">Blood Type</label>
-              <select id="bar_BloodType" name="bar_BloodType">
-                <option value="">Choose</option>
-                <option value="A+">A+</option>
-                <option value="A-">A-</option>
-                <option value="B+">B+</option>
-                <option value="B-">B-</option>
-                <option value="O+">O+</option>
-                <option value="O-">O-</option>
-                <option value="AB+">AB+</option>
-                <option value="AB-">AB-</option>
-              </select>
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="bar_TypeOfResidency" class="required"
-                >Type of Residency</label
-              >
-              <select
-                id="bar_TypeOfResidency"
-                name="bar_TypeOfResidency"
-              >
-                <option value="">Choose</option>
-                <option value="Homeowner">Homeowner</option>
-                <option value="Renter">Renter</option>
-                <option value="Boarder">Boarder</option>
-                <option value="Tenant">Tenant</option>
-              </select>
-            </div>
-            <div style="flex:1 1 220px;min-width:220px;display:flex;flex-direction:column;">
-              <label for="bar_DateOfRegistration">Date of Registration</label>
-              <input
-                type="date"
-                id="bar_DateOfRegistration"
-                name="bar_DateOfRegistration"
-              />
-            </div>
-          </div>
         </section>
 
         <!-- Identification Numbers Section -->
         <section class="section" id="identification">
-          <h2>Identification Numbers</h2>
-          <div class="row" style="display:flex;flex-wrap:wrap;gap:15px;">
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_TinNo">TIN No</label>
-              <input type="text" id="bar_TinNo" name="bar_TinNo" />
+            <h2>Identification Numbers</h2>
+            <div class="row">
+                <div>
+                    <label for="bar_TinNo">TIN No</label>
+                    <input type="text" id="bar_TinNo" name="bar_TinNo">
+                </div>
+                <div>
+                    <label for="bar_SSSNo">SSS No</label>
+                    <input type="text" id="bar_SSSNo" name="bar_SSSNo">
+                </div>
+                <div>
+                    <label for="bar_GSISNo">GSIS No</label>
+                    <input type="text" id="bar_GSISNo" name="bar_GSISNo">
+                </div>
+                <div>
+                    <label for="bar_PhilHealthNo">PhilHealth No</label>
+                    <input type="text" id="bar_PhilHealthNo" name="bar_PhilHealthNo">
+                </div>
+                <div>
+                    <label for="bar_PagibigNo">Pag-IBIG No</label>
+                    <input type="text" id="bar_PagibigNo" name="bar_PagibigNo">
+                </div>
+                <div>
+                    <label for="bar_HMDFNo">HMDF No</label>
+                    <input type="text" id="bar_HMDFNo" name="bar_HMDFNo">
+                </div>
             </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_SSSNo">SSS No</label>
-              <input type="text" id="bar_SSSNo" name="bar_SSSNo" />
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_GSISNo">GSIS No</label>
-              <input type="text" id="bar_GSISNo" name="bar_GSISNo" />
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_PhilHealthNo">PhilHealth No</label>
-              <input
-                type="text"
-                id="bar_PhilHealthNo"
-                name="bar_PhilHealthNo"
-              />
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_PagibigNo">Pag-IBIG No</label>
-              <input
-                type="text"
-                id="bar_PagibigNo"
-                name="bar_PagibigNo"
-              />
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_HMDFNo">HMDF No</label>
-              <input type="text" id="bar_HMDFNo" name="bar_HMDFNo" />
-            </div>
-          </div>
         </section>
 
         <!-- Address Information Section -->
         <section class="section" id="addressInfo">
-          <h2>Address Information</h2>
-          <div class="row" style="display:flex;flex-wrap:wrap;gap:15px;">
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_HouseNo" class="required">House No</label>
-              <input type="text" id="bar_HouseNo" name="bar_HouseNo" />
+            <h2>Address Information</h2>
+            <div class="row">
+                <div>
+                    <label for="bar_HouseNo" class="required">House No</label>
+                    <input type="text" id="bar_HouseNo" name="bar_HouseNo">
+                </div>
+                <div>
+                    <label for="bar_Street" class="required">Street</label>
+                    <input type="text" id="bar_Street" name="bar_Street">
+                </div>
+                <div>
+                    <label for="bar_Subdivision">Subdivision/Village</label>
+                    <input type="text" id="bar_Subdivision" name="bar_Subdivision">
+                </div>
+                <div>
+                    <label for="bar_PrecinctNo" class="required">Precinct No</label>
+                    <input type="text" id="bar_PrecinctNo" name="bar_PrecinctNo">
+                </div>
+                <div>
+                    <label for="bar_VRRNo">VRR No</label>
+                    <input type="text" id="bar_VRRNo" name="bar_VRRNo">
+                </div>
+                <div>
+                    <label for="bar_PostalCode">Postal Code</label>
+                    <input type="text" id="bar_PostalCode" name="bar_PostalCode">
+                </div>
+                <div>
+                    <label for="bar_barangay" class="required">Barangay</label>
+                    <input type="text" id="bar_barangay" name="bar_barangay">
+                </div>
+                <div>
+                    <label for="bar_city" class="required">City</label>
+                    <input type="text" id="bar_city" name="bar_city">
+                </div>
             </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_Street" class="required">Street</label>
-              <input type="text" id="bar_Street" name="bar_Street" />
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_Subdivision">Subdivision/Village</label>
-              <input
-                type="text"
-                id="bar_Subdivision"
-                name="bar_Subdivision"
-              />
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_PrecinctNo" class="required">Precinct No</label>
-              <input
-                type="text"
-                id="bar_PrecinctNo"
-                name="bar_PrecinctNo"
-              />
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_VRRNo">VRR No</label>
-              <input type="text" id="bar_VRRNo" name="bar_VRRNo" />
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_PostalCode">Postal Code</label>
-              <input
-                type="text"
-                id="bar_PostalCode"
-                name="bar_PostalCode"
-              />
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_barangay" class="required">Barangay</label>
-              <input type="text" id="bar_barangay" name="bar_barangay" />
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_city" class="required">City</label>
-              <input type="text" id="bar_city" name="bar_city" />
-            </div>
-          </div>
         </section>
 
         <!-- Emergency Contact Section -->
         <section class="section" id="emergencyContact">
-          <h2>Emergency Contact</h2>
-          <div class="row" style="display:flex;flex-wrap:wrap;gap:15px;">
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_EmergencyContactName">Name</label>
-              <input
-                type="text"
-                id="bar_EmergencyContactName"
-                name="bar_EmergencyContactName"
-              />
+            <h2>Emergency Contact</h2>
+            <div class="row">
+                <div>
+                    <label for="bar_EmergencyContactName">Name</label>
+                    <input type="text" id="bar_EmergencyContactName" name="bar_EmergencyContactName">
+                </div>
+                <div>
+                    <label for="bar_EmergencyContactRelation">Relation</label>
+                    <input type="text" id="bar_EmergencyContactRelation" name="bar_EmergencyContactRelation" required placeholder="Relation to you">
+                </div>
+                <div>
+                    <label for="bar_EmergencyContactNumber">Contact Number</label>
+                    <input type="tel" id="bar_EmergencyContactNumber" name="bar_EmergencyContactNumber">
+                </div>
             </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_EmergencyContactRelation">Relation</label>
-              <input
-                type="text"
-                id="bar_EmergencyContactRelation"
-                name="bar_EmergencyContactRelation"
-                required
-                placeholder="Relation to you"
-              />
-            </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_EmergencyContactNumber">Contact Number</label>
-              <input
-                type="tel"
-                id="bar_EmergencyContactNumber"
-                name="bar_EmergencyContactNumber"
-              />
-            </div>
-          </div>
         </section>
 
         <!-- Photo and Documents Section -->
         <section class="section">
-          <h2>Photo and Document Requirements</h2>
-          <div class="row" style="display:flex;flex-wrap:wrap;gap:15px;">
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_idPhoto" class="required"
-                >2x2 ID Photo (White Background)</label
-              >
-              <div class="file-input-container">
-                <input
-                  type="file"
-                  id="bar_idPhoto"
-                  name="bar_idPhoto"
-                  accept="image/*,.pdf"
-                />
-              </div>
+            <h2>Photo and Document Requirements</h2>
+            <div class="row">
+                <div>
+                    <label for="bar_idPhoto" class="required">2x2 ID Photo (White Background)</label>
+                    <div class="file-input-container">
+                        <input type="file" id="bar_idPhoto" name="bar_idPhoto" accept="image/*,.pdf">
+                    </div>
+                </div>
+                <div>
+                    <label for="bar_signature" class="required">Signature File (Digital or Scanned)</label>
+                    <div class="file-input-container">
+                        <input type="file" id="bar_signature" name="bar_signature" accept="image/*,.pdf">
+                    </div>
+                </div>
             </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_signature" class="required"
-                >Signature File (Digital or Scanned)</label
-              >
-              <div class="file-input-container">
-                <input
-                  type="file"
-                  id="bar_signature"
-                  name="bar_signature"
-                  accept="image/*,.pdf"
-                />
-              </div>
-            </div>
-          </div>
-          <small class="note"
-            >NOTE: Photos must be clear, recent, and with full face view
-            (without sunglasses or hat).</small
-          >
-        </section>
-
+            <small class="note">NOTE: Photos must be clear, recent, and with full face view (without sunglasses or hat).</small>
+        </section> 
+        
         <!-- Supporting Documents Section -->
         <section class="section">
-          <h2>Supporting Documents</h2>
-          <div class="row" style="display:flex;flex-wrap:wrap;gap:15px;">
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_ValidID" class="required">Valid Government ID</label>
-              <div class="file-input-container">
-                <input
-                  type="file"
-                  id="bar_ValidID"
-                  name="bar_ValidID"
-                  accept="image/*,.pdf"
-                />
-              </div>
-              <small class="note">(Passport, Driver's License, UMID, etc.)</small>
+            <h2>Supporting Documents</h2>
+            <div class="row">
+                <div>
+                    <label for="bar_ValidID" class="required">Valid Government ID</label>
+                    <div class="file-input-container">
+                        <input type="file" id="bar_ValidID" name="bar_ValidID" accept="image/*,.pdf">
+                    </div>
+                    <small class="note">(Passport, Driver's License, UMID, etc.)</small>
+                </div>
+                <div>
+                    <label for="bar_ProofOfResidency" class="required">Proof of Residency</label>
+                    <div class="file-input-container">
+                        <input type="file" id="bar_ProofOfResidency" name="bar_ProofOfResidency" accept="image/*,.pdf">
+                    </div>
+                    <small class="note">(Utility bill, lease agreement, etc.)</small>
+                </div>
             </div>
-            <div style="flex:1;display:flex;flex-direction:column;">
-              <label for="bar_ProofOfResidency" class="required"
-                >Proof of Residency</label
-              >
-              <div class="file-input-container">
-                <input
-                  type="file"
-                  id="bar_ProofOfResidency"
-                  name="bar_ProofOfResidency"
-                  accept="image/*,.pdf"
-                />
-              </div>
-              <small class="note">(Utility bill, lease agreement, etc.)</small>
-            </div>
-          </div>
         </section>
 
         <!-- Declaration -->
         <section class="section">
-          <div>
-            <label class="required"
-              ><input
-                type="checkbox"
-                id="bar_declaration"
-                name="bar_declaration"
-              />I hereby certify that all information provided in this application
-              is true and correct to the best of my knowledge. I understand that
-              any false information may result in disqualification of my
-              application or revocation of my barangay ID.</label
-            >
-          </div>
+            <div>
+                <label class="required"><input type="checkbox" id="bar_declaration" name="bar_declaration">I hereby certify that all information provided in this application is true and correct to the best of my knowledge. I understand that any false information may result in disqualification of my application or revocation of my barangay ID.</label>
+            </div>
         </section>
 
-        <div style="margin-top:10px;display:flex;justify-content:end;gap:10px;">
-          <button type="reset">Reset Form</button>
-          <button type="submit">Submit Information</button>
+        <div class="mt-8 flex justify-end space-x-4">
+            <button type="reset" class="modern-btn reset-btn">Reset Form</button>
+            <button type="submit" class="modern-btn submit-btn">Submit Information</button>
         </div>
-      </form>
+        
+        <!-- Post-submission actions section (hidden by default) -->
+        <div id="bar-post-actions" class="post-submission-actions">
+            <p>Barangay ID has been added to your orders.</p>
+            <p>What would you like to do next?</p>
+            <div class="action-buttons">
+                <button type="button" id="bar-another-btn" class="modern-btn another-btn">Make Another Request</button>
+                <button type="button" id="bar-checkout-btn" class="modern-btn checkout-btn">Proceed to Checkout</button>
+            </div>
+        </div>
+    </form>
+  </div>
+  </div>
+  </div>
+
+  <!-- Modal Structure -->
+<div id="modal" class="modal">
+  <div class="modal-content">
+    <span class="close-button">&times;</span>
+    <div id="modalBody">
     </div>
   </div>
-  <!-- ======================================================================== -->
+</div>
+
 
   <footer class="site-footer">
-    <div class="footer-section">
-      <div>
-        <p>
-          <a href="index.html">Home</a><br>
-          <a href="contact.html">Contact Us</a>
-        </p>
-        <p>help@ibarangay.com<br>(02) 1234-5678</p>
-      </div>
-      <div>
-        <p>
-          <a href="iBaranagy_T&C.html" id="footerUserAgreement">User Agreement</a><br>
-          <a href="iBarangay_T&C.html" id="footerPrivacyPolicy">Privacy Policy</a>
-        </p>
-      </div>
-      <div>
-        <p>Accredited Partner of:<br><strong>iBarangay</strong></p>
-      </div>
-      <div>
-        <p>Powered by:<br><strong>iBarangay</strong></p>
-      </div>
-      <div class="footer-icons">
-        <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png" alt="Facebook" /></a>
-        <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/1200px-Instagram_icon.png" alt="Instagram" /></a>
-      </div>
+  <div class="footer-section">
+    <div>
+      <p>
+        <a href="index.html">Home</a><br>
+        <a href="contact.html">Contact Us</a>
+      </p>
+      <p>help@ibarangay.com<br>(02) 1234-5678</p>
     </div>
-  </footer>
+    <div>
+      <p>
+        <a href="iBaranagy_T&C .html" id="footerUserAgreement">User Agreement</a><br>
+        <a href="iBarangay_T&C .html" id="footerPrivacyPolicy">Privacy Policy</a>
+      </p>
+    </div>
+    <div>
+      <p>Accredited Partner of:<br><strong>iBarangay</strong></p>
+    </div>
+    <div>
+      <p>Powered by:<br><strong>iBarangay</strong></p>
+    </div>
+    <div class="footer-icons">
+      <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png" alt="Facebook" /></a>
+      <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/1200px-Instagram_icon.png" alt="Instagram" /></a>
+    </div>
+  </div>
+</footer>
 
-  <script>
-    // Check if user is logged in
-    function isLoggedIn() {
-      return localStorage.getItem('user') !== null && localStorage.getItem('token') !== null;
-    }
-    
-    // Redirect if not logged in
-    if (!isLoggedIn()) {
-      window.location.href = 'login.html'; // Redirect to login page if not logged in
-    }
-    
-    // Show debug info with current date/time and user
-    function updateDebugInfo() {
-      const now = new Date();
-      const year = now.getUTCFullYear();
-      const month = String(now.getUTCMonth() + 1).padStart(2, '0');
-      const day = String(now.getUTCDate()).padStart(2, '0');
-      const hours = String(now.getUTCHours()).padStart(2, '0');
-      const minutes = String(now.getUTCMinutes()).padStart(2, '0');
-      const seconds = String(now.getUTCSeconds()).padStart(2, '0');
-      
-      const formattedDate = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-      
-      const debugElement = document.getElementById('debug-info');
-      debugElement.innerHTML = `
-        Current Date and Time (UTC - YYYY-MM-DD HH:MM:SS formatted): ${formattedDate}<br>
-        Current User's Login: LEBONCHON
-      `;
-    }
-    
-    // Update debug info every second
-    setInterval(updateDebugInfo, 1000);
-    updateDebugInfo();
-    
-    // Modal logic (Terms/Privacy)
-    const modal = document.getElementById('modal');
-    const modalBody = document.getElementById('modalBody');
-    const closeBtn = document.querySelector('.close-button');
-    // We only query these if they exist in the document
-    const termsLink = document.getElementById('openTerms');
-    const privacyLink = document.getElementById('openPrivacy');
+ <script>
+  const modal = document.getElementById('modal');
+  const modalBody = document.getElementById('modalBody');
+  const closeBtn = document.querySelector('.close-button');
 
-    if (termsLink) {
-      termsLink.addEventListener('click', function (e) {
-        e.preventDefault();
-        openModal('iBarangay_T&C.html');
+  document.getElementById('openTerms').addEventListener('click', function (e) {
+    e.preventDefault();
+    openModal('iBarangay_T&C .html');
+  });
+
+  document.getElementById('openPrivacy').addEventListener('click', function (e) {
+    e.preventDefault();
+    openModal('iBarangay_T&C .html');
+  });
+
+  function openModal(contentUrl) {
+    modalBody.innerHTML = `<iframe src="${contentUrl}" style="width:100%; height:70vh; border:none;"></iframe>`;
+    modal.style.display = 'block';
+  }
+
+  closeBtn.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+
+  window.addEventListener('click', (event) => {
+    if (event.target === modal) {
+      modal.style.display = 'none';
+    }
+  });
+
+  const checkboxes = document.querySelectorAll('.agreement-checkbox');
+  const btn1 = document.getElementById('btn1');
+  const btn2 = document.getElementById('btn2');
+
+  function updateButtonState() {
+    const allChecked = Array.from(checkboxes).every(cb => cb.checked);
+    btn1.disabled = !allChecked;
+    btn2.disabled = !allChecked;
+  }
+
+  checkboxes.forEach(cb => {
+    cb.addEventListener('change', updateButtonState);
+  });
+
+  btn1.addEventListener('click', () => {
+    document.getElementById('residencyModal').style.display = 'flex';
+  });
+
+  function closeResidencyModal() {
+    document.getElementById('residencyModal').style.display = 'none';
+    document.getElementById('res-post-actions').style.display = 'none';
+    document.getElementById('residentForm').reset();
+    document.querySelector('#residentForm .mt-8').style.display = 'flex';
+  }
+
+  btn2.addEventListener('click', () => {
+    document.getElementById('barangayIDModal').style.display = 'flex';
+  });
+
+  function closeBarangayIDModal() {
+    document.getElementById('barangayIDModal').style.display = 'none';
+    document.getElementById('bar-post-actions').style.display = 'none';
+    document.getElementById('barangayIDForm').reset();
+    document.querySelector('#barangayIDForm .mt-8').style.display = 'flex';
+  }
+
+  // --- Updated: Residency Certificate Form Submission with API ---
+  document.getElementById('residentForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const form = this;
+    const token = localStorage.getItem('token');
+    const formData = new FormData(form);
+    formData.append('documentType', 'Certificate of Residency');
+    formData.append('status', 'cart');
+    try {
+      const res = await fetch('/api/requests', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token },
+        body: formData
       });
-    }
-    if (privacyLink) {
-      privacyLink.addEventListener('click', function (e) {
-        e.preventDefault();
-        openModal('iBarangay_T&C.html');
-      });
-    }
-
-    function openModal(contentUrl) {
-      modalBody.innerHTML = `<iframe src="${contentUrl}" style="width:100%; height:70vh; border:none;"></iframe>`;
-      modal.style.display = 'block';
-    }
-    if (closeBtn) {
-      closeBtn.addEventListener('click', () => {
-        modal.style.display = 'none';
-      });
-    }
-    window.addEventListener('click', (event) => {
-      if (event.target === modal) {
-        modal.style.display = 'none';
-      }
-    });
-
-    // Checkbox and button logic (to enable/disable buttons)
-    const checkboxes = document.querySelectorAll('.agreement-checkbox');
-    const residencyBtn = document.getElementById('residencyBtn');
-    const businessBtn = document.getElementById('businessBtn');
-    const barangayBtn = document.getElementById('barangayBtn');
-
-    function updateButtonState() {
-      const allChecked = Array.from(checkboxes).every(cb => cb.checked);
-      residencyBtn.disabled = !allChecked;
-      businessBtn.disabled = !allChecked;
-      barangayBtn.disabled = !allChecked;
-    }
-    checkboxes.forEach(cb => {
-      cb.addEventListener('change', updateButtonState);
-    });
-
-    // Show modals for forms
-    const residencyModal = document.getElementById('residencyModal');
-    const closeResidencyModal = document.getElementById('closeResidencyModal');
-    const barangayIdModal = document.getElementById('barangayIdModal');
-    const closeBarangayModal = document.getElementById('closeBarangayModal');
-
-    residencyBtn.addEventListener('click', () => {
-      residencyModal.style.display = 'block';
-    });
-    closeResidencyModal.addEventListener('click', () => {
-      residencyModal.style.display = 'none';
-    });
-    window.addEventListener('click', (e) => {
-      if (e.target === residencyModal) {
-        residencyModal.style.display = 'none';
-      }
-    });
-
-    barangayBtn.addEventListener('click', () => {
-      barangayIdModal.style.display = 'block';
-    });
-    closeBarangayModal.addEventListener('click', () => {
-      barangayIdModal.style.display = 'none';
-    });
-    window.addEventListener('click', (e) => {
-      if (e.target === barangayIdModal) {
-        barangayIdModal.style.display = 'none';
-      }
-    });
-
-    // Business Clearance button
-    businessBtn.addEventListener('click', () => {
-      let orders = JSON.parse(localStorage.getItem('orders')) || [];
-      const name = 'Business Clearance';
-      const price = 50;
-      const existing = orders.find(order => order.name === name);
-      if (existing) {
-        existing.qty += 1;
+      const result = await res.json();
+      if (result.success) {
+        form.querySelector('.mt-8').style.display = 'none';
+        document.getElementById('res-post-actions').style.display = 'block';
+        document.getElementById('res-post-actions').scrollIntoView({ behavior: 'smooth' });
       } else {
-        orders.push({ name, price, qty: 1 });
+        alert(result.message || 'Submission failed.');
       }
-      localStorage.setItem('orders', JSON.stringify(orders));
-      window.location.href = 'orders.html';
-    });
+    } catch (err) {
+      alert('Network error.');
+    }
+  });
 
-    // Form submission for Residency Certificate
-    document.getElementById('residentForm').addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      // Get form data
-      const formData = new FormData(document.getElementById('residentForm'));
-      const formObject = {};
-      formData.forEach((value, key) => {
-        formObject[key] = value;
+  // --- Updated: Barangay ID Form Submission with API ---
+  document.getElementById('barangayIDForm').addEventListener('submit', async function (e) {
+    e.preventDefault();
+    const form = this;
+    const token = localStorage.getItem('token');
+    const formData = new FormData(form);
+    formData.append('documentType', 'Barangay ID');
+    formData.append('status', 'cart');
+    try {
+      const res = await fetch('/api/requests', {
+        method: 'POST',
+        headers: { 'Authorization': 'Bearer ' + token },
+        body: formData
       });
-      
-      // Save to orders
-      let orders = JSON.parse(localStorage.getItem('orders')) || [];
-      orders.push({ 
-        name: 'Certificate of Residency', 
-        price: 75, 
-        qty: 1,
-        formData: formObject
-      });
-      localStorage.setItem('orders', JSON.stringify(orders));
-      
-      // Close modal and redirect
-      residencyModal.style.display = 'none';
-      window.location.href = 'orders.html';
-    });
-    
-    // Form submission for Barangay ID
-    document.getElementById('barangayIDFormMain').addEventListener('submit', (e) => {
-      e.preventDefault();
-      
-      // Get form data
-      const formData = new FormData(document.getElementById('barangayIDFormMain'));
-      const formObject = {};
-      formData.forEach((value, key) => {
-        formObject[key] = value;
-      });
-      
-      // Save to orders
-      let orders = JSON.parse(localStorage.getItem('orders')) || [];
-      orders.push({ 
-        name: 'Barangay ID', 
-        price: 100, 
-        qty: 1,
-        formData: formObject
-      });
-      localStorage.setItem('orders', JSON.stringify(orders));
-      
-      // Close modal and redirect
-      barangayIdModal.style.display = 'none';
-      window.location.href = 'orders.html';
-    });
-  </script>
+      const result = await res.json();
+      if (result.success) {
+        form.querySelector('.mt-8').style.display = 'none';
+        document.getElementById('bar-post-actions').style.display = 'block';
+        document.getElementById('bar-post-actions').scrollIntoView({ behavior: 'smooth' });
+      } else {
+        alert(result.message || 'Submission failed.');
+      }
+    } catch (err) {
+      alert('Network error.');
+    }
+  });
+
+  // Post-submission buttons
+  document.getElementById('res-another-btn').addEventListener('click', function () {
+    closeResidencyModal();
+  });
+
+  document.getElementById('res-checkout-btn').addEventListener('click', function () {
+    window.location.href = 'orders.html';
+  });
+
+  document.getElementById('bar-another-btn').addEventListener('click', function () {
+    closeBarangayIDModal();
+  });
+
+  document.getElementById('bar-checkout-btn').addEventListener('click', function () {
+    window.location.href = 'orders.html';
+  });
+</script>
 </body>
 </html>

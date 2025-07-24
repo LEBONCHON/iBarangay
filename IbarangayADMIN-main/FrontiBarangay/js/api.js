@@ -1,17 +1,14 @@
-// API connection for iBarangay
-const API_URL = 'http://localhost:3000/api';
+const API_URL = 'http://localhost:3000/api/users';
 
 // Register new user
 async function registerUser(userData) {
   try {
-    const response = await fetch(`${API_URL}/users/register`, {
+    const response = await fetch(`${API_URL}/register`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData)
     });
-    
+
     return await response.json();
   } catch (error) {
     console.error('Registration error:', error);
@@ -22,22 +19,19 @@ async function registerUser(userData) {
 // Login user
 async function loginUser(credentials) {
   try {
-    const response = await fetch(`${API_URL}/users/login`, {
+    const response = await fetch(`${API_URL}/login`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(credentials)
     });
-    
+
     const data = await response.json();
-    
+
     if (data.success) {
-      // Store auth data in localStorage
       localStorage.setItem('user', JSON.stringify(data.user));
       localStorage.setItem('token', data.token);
     }
-    
+
     return data;
   } catch (error) {
     console.error('Login error:', error);
@@ -45,7 +39,7 @@ async function loginUser(credentials) {
   }
 }
 
-// Check if user is logged in
+// Check login
 function isLoggedIn() {
   return localStorage.getItem('user') !== null;
 }
@@ -56,7 +50,7 @@ function getCurrentUser() {
   return userJson ? JSON.parse(userJson) : null;
 }
 
-// Logout user
+// Logout
 function logoutUser() {
   localStorage.removeItem('user');
   localStorage.removeItem('token');
