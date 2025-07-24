@@ -4,9 +4,75 @@
   <meta charset="UTF-8" />
   <title>Profile</title>
   <link rel="stylesheet" href="styles.css" />
+  <style>
+    .profile-container {
+      display: flex;
+      align-items: center;
+      margin: 2rem;
+      gap: 1.5rem;
+    }
+    .pp {
+      border-radius: 100%;
+      width: 100px;
+      height: 100px;
+      object-fit: cover;
+      border: 2px solid #4CAF50;
+    }
+    .profile-info {
+      flex: 1;
+    }
+    .logout-btn {
+      padding: 8px 18px;
+      background: #d9534f;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      margin-top: 8px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .logout-btn:hover {
+      background: #b52b27;
+    }
+    .order-history {
+      margin: 2rem auto;
+      max-width: 700px;
+      background: #f8f8f8;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px #0001;
+      padding: 1.5rem;
+    }
+    .order-history-inner {
+      width: 100%;
+    }
+    #order-list {
+      margin: 1rem 0 0 0;
+      padding: 0;
+      list-style: none;
+    }
+    #order-list li {
+      background: #fff;
+      border-radius: 5px;
+      margin-bottom: 1rem;
+      padding: 1rem;
+      box-shadow: 0 1px 4px #00000011;
+      font-size: 1rem;
+      word-break: break-all;
+    }
+    .file-links a {
+      color: #007bff;
+      text-decoration: underline;
+      margin-right: 10px;
+    }
+    @media (max-width: 600px) {
+      .profile-container { flex-direction: column; align-items: flex-start; }
+      .order-history { padding: 1rem; }
+      #order-list li { font-size: .95rem; }
+    }
+  </style>
 </head>
 <body>
-
   <nav>
     <a href="index.html">
       <img src="https://app.bploparanaque.com/safetyseal/images/logo.png" alt="City Seal" class="logo">
@@ -27,88 +93,119 @@
     <img src="https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png" alt="Profile" class="pp"/>
     <div class="profile-info">
       <p><strong>Email:</strong> <span id="user-email">Loading...</span></p>
-
-         <button class="logout-btn" onclick="logout()">Log Out</button>
-    </div>
-    </div>
-
-    <div class="order-history">
-  <div class="order-history-inner">
-    <h2>Order History</h2>
-    <ul id="order-list">
-      <li>Loading orders...</li>
-    </ul>
-  </div>
-</div>
-
-
-
- <footer class="site-footer">
-  <div class="footer-section">
-    <div>
-      <p>
-        <a href="index.html">Home</a><br>
-        <a href="contact.html">Contact Us</a>
-      </p>
-      <p>help@ibarangay.com<br>(02) 1234-5678</p>
-    </div>
-    <div>
-      <p>
-        <a href="iBaranagy_T&C .html" id="footerUserAgreement">User Agreement</a><br>
-        <a href="iBarangay_T&C .html" id="footerPrivacyPolicy">Privacy Policy</a>
-      </p>
-    </div>
-    <div>
-      <p>Accredited Partner of:<br><strong>iBarangay</strong></p>
-    </div>
-    <div>
-      <p>Powered by:<br><strong>iBarangay</strong></p>
-    </div>
-    <div class="footer-icons">
-      <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png" alt="Facebook" /></a>
-      <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/1200px-Instagram_icon.png" alt="Instagram" /></a>
+      <!-- Add more user info here if needed -->
+      <button class="logout-btn" onclick="logout()">Log Out</button>
     </div>
   </div>
-</footer>
 
-  <script src="js/api.js"></script>
-<script>
-  // Sample orders - replace with dynamic data from server/localStorage if needed
-  const orders = [
-    { id: 'BRGY-001', date: '2025-05-01', status: 'Completed' },
-    { id: 'BRGY-002', date: '2025-05-15', status: 'Processing' },
-    { id: 'BRGY-003', date: '2025-05-20', status: 'Cancelled' }
-  ];
+  <div class="order-history">
+    <div class="order-history-inner">
+      <h2>Request History</h2>
+      <ul id="order-list">
+        <li>Loading requests...</li>
+      </ul>
+    </div>
+  </div>
 
-  const orderList = document.getElementById('order-list');
-  if (orders.length === 0) {
-    orderList.innerHTML = '<li>No orders yet.</li>';
-  } else {
-    orderList.innerHTML = '';
-    orders.forEach(order => {
-      orderList.innerHTML += `
-        <li>
-          <strong>Order ID:</strong> ${order.id}<br>
-          <strong>Date:</strong> ${order.date}<br>
-          <strong>Status:</strong> ${order.status}
-        </li>`;
-    });
-  }
+  <footer class="site-footer">
+    <div class="footer-section">
+      <div>
+        <p>
+          <a href="index.html">Home</a><br>
+          <a href="contact.html">Contact Us</a>
+        </p>
+        <p>help@ibarangay.com<br>(02) 1234-5678</p>
+      </div>
+      <div>
+        <p>
+          <a href="iBarangay_T&C.html" id="footerUserAgreement">User Agreement</a><br>
+          <a href="iBarangay_T&C.html" id="footerPrivacyPolicy">Privacy Policy</a>
+        </p>
+      </div>
+      <div>
+        <p>Accredited Partner of:<br><strong>iBarangay</strong></p>
+      </div>
+      <div>
+        <p>Powered by:<br><strong>iBarangay</strong></p>
+      </div>
+      <div class="footer-icons">
+        <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6c/Facebook_Logo_2023.png" alt="Facebook" /></a>
+        <a href="#"><img src="https://upload.wikimedia.org/wikipedia/commons/thumb/a/a5/Instagram_icon.png/1200px-Instagram_icon.png" alt="Instagram" /></a>
+      </div>
+    </div>
+  </footer>
 
-  const emailDisplay = document.getElementById('user-email');
-  
-  // Check if user is logged in
-  if (!isLoggedIn()) {
-    window.location.href = 'login.html'; // Redirect if not logged in
-  } else {
-    const user = getCurrentUser();
-    emailDisplay.textContent = user ? (user.email || user.username) : 'Unknown User';
-  }
+  <script>
+    // Display user email (optional: you may fetch user info from /api/me or similar endpoint)
+    const emailDisplay = document.getElementById('user-email');
+    try {
+      const user = JSON.parse(localStorage.getItem('user'));
+      if (user && user.email) {
+        emailDisplay.textContent = user.email;
+      } else {
+        emailDisplay.textContent = "Unknown";
+      }
+    } catch (e) {
+      emailDisplay.textContent = "Unknown";
+    }
 
-  function logout() {
-    logoutUser();
-  }
-</script>
+    // Fetch and display requests from backend (MongoDB via JWT)
+    async function loadOrders() {
+      const orderList = document.getElementById('order-list');
+      const token = localStorage.getItem('token');
+      if (!token) {
+        orderList.innerHTML = '<li>You must be logged in.</li>';
+        return;
+      }
+      try {
+        const res = await fetch('/api/requests/mine', {
+          headers: { 'Authorization': 'Bearer ' + token }
+        });
+        if (!res.ok) {
+          orderList.innerHTML = '<li>Not authorized or failed to fetch requests.</li>';
+          return;
+        }
+        const orders = await res.json();
+        if (!orders || orders.length === 0) {
+          orderList.innerHTML = '<li>No requests yet.</li>';
+        } else {
+          orderList.innerHTML = '';
+          orders.forEach(order => {
+            // Show all file links if present
+            let filesHtml = "";
+            if (order.files) {
+              filesHtml = '<div class="file-links">';
+              for (const [key, file] of Object.entries(order.files)) {
+                if (file && file.filename && file.originalname) {
+                  filesHtml += `<strong>${key}:</strong> <a href="/uploads/${file.filename}" target="_blank">${file.originalname}</a><br>`;
+                }
+              }
+              filesHtml += "</div>";
+            }
+            // Show all other data (you can expand this as needed)
+            orderList.innerHTML += `
+              <li>
+                <strong>Document:</strong> ${order.documentType || ""}<br>
+                <strong>Purpose:</strong> ${order.purpose || "N/A"}<br>
+                ${order.firstName || order.lastName ? "<strong>Name:</strong> " + (order.firstName || "") + " " + (order.lastName || "") + "<br>" : ""}
+                ${order.dateOfBirth ? "<strong>Date of Birth:</strong> " + order.dateOfBirth + "<br>" : ""}
+                ${filesHtml}
+                <strong>Status:</strong> ${order.status || "N/A"}<br>
+                <strong>Date:</strong> ${order.dateRequested ? new Date(order.dateRequested).toLocaleDateString() : ""}
+              </li>`;
+          });
+        }
+      } catch (err) {
+        orderList.innerHTML = '<li>Failed to load requests.</li>';
+      }
+    }
+    loadOrders();
 
+    function logout() {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      window.location.href = 'login.html';
+    }
+  </script>
 </body>
 </html>

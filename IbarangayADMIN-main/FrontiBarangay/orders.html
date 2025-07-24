@@ -6,11 +6,10 @@
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <nav>
+<nav>
   <a href="index.html">
     <img src="https://app.bploparanaque.com/safetyseal/images/logo.png" alt="City Seal" class="logo">
   </a>
-
   <div class="nav-links">
     <a href="index.html">Home</a>
     <a href="request.html">Request</a>
@@ -23,7 +22,7 @@
   </div>
 </nav>
 
-    <div class="orders-container">
+<div class="orders-container">
   <div class="orders-title">Orders:</div>
   <div id="order-list"></div>
 
@@ -34,16 +33,13 @@
 
   <div class="subtotal">SUBTOTAL: ₱0.00</div>
 
-    <div class="actions">
-  <button class="back-btn" onclick="window.location.href='request.html'">Back</button>
-  <button class="proceed-btn" onclick="window.location.href='status.html'">Proceed</button>
+  <div class="actions">
+    <button class="back-btn" onclick="window.location.href='request.html'">Back</button>
+    <button class="proceed-btn">Proceed</button>
+  </div>
 </div>
 
-  </div>
-
-  
-
-  <footer class="site-footer">
+<footer class="site-footer">
   <div class="footer-section">
     <div>
       <p>
@@ -71,64 +67,87 @@
   </div>
 </footer>
 
+<script>
+async function loadOrders() {
+  const orderList = document.getElementById('order-list');
+  orderList.innerHTML = '';
+  const token = localStorage.getItem('token');
+  if (!token) {
+    orderList.innerHTML = '<div>Please log in to view your orders.</div>';
+    document.querySelector('.subtotal').textContent = 'SUBTOTAL: ₱0.00';
+    return;
+  }
 
-  <script>
-// Check if user is logged in
-if (!isLoggedIn()) {
-  window.location.href = 'login.html'; // Redirect to login page if not logged in
-}
-  function loadOrders() {
-    const orderList = document.getElementById('order-list');
-    orderList.innerHTML = '';
-    let orders = JSON.parse(localStorage.getItem('orders')) || [];
+  try {
+    const res = await fetch('/api/requests/mine', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) {
+      orderList.innerHTML = '<div>Not authorized or failed to fetch orders.</div>';
+      document.querySelector('.subtotal').textContent = 'SUBTOTAL: ₱0.00';
+      return;
+    }
+    let orders = await res.json();
+    // Only show requests in "cart" status (NOT pending, completed, etc.)
+    orders = orders.filter(order => order.status === "cart");
+    if (!orders || orders.length === 0) {
+      orderList.innerHTML = '<div>No orders yet.</div>';
+      document.querySelector('.subtotal').textContent = 'SUBTOTAL: ₱0.00';
+      return;
+    }
 
-    orders.forEach((item, index) => {
+    // Price mapping per document type
+    const priceMap = {
+      "Certificate of Residency": 100,
+      "Barangay ID": 120
+    };
+
+    let subtotal = 0;
+
+    orders.forEach((order) => {
+      const docType = order.documentType || "Unknown Document";
+      const qty = 1;
+      const price = priceMap[docType] || 0;
+      const total = price * qty;
+      subtotal += total;
+
       const orderEl = document.createElement('div');
       orderEl.className = 'order-item';
       orderEl.innerHTML = `
         <div class="order-info">
           <img src="https://img.icons8.com/ios/50/document--v1.png" alt="doc" />
-          <div class="order-name">${item.name}</div>
+          <div class="order-name">${docType}</div>
         </div>
-        <div class="order-price">₱${item.price}</div>
-        <div class="quantity-control">
-          <button onclick="adjustQty(${index}, -1)">-</button>
-          <span>${item.qty}</span>
-          <button onclick="adjustQty(${index}, 1)">+</button>
-        </div>
-        <div class="order-total">₱${item.price * item.qty}</div>
-        <button onclick="removeOrder(${index})" style="margin-left: 10px;">🗑️</button>
+        <div class="order-price">₱${price}</div>
+        <div class="order-total">₱${total}</div>
       `;
       orderList.appendChild(orderEl);
     });
 
-    updateSubtotal();
-  }
-
-  function adjustQty(index, delta) {
-    let orders = JSON.parse(localStorage.getItem('orders')) || [];
-    orders[index].qty = Math.max(1, orders[index].qty + delta);
-    localStorage.setItem('orders', JSON.stringify(orders));
-    loadOrders();
-  }
-
-  function removeOrder(index) {
-    let orders = JSON.parse(localStorage.getItem('orders')) || [];
-    orders.splice(index, 1);
-    localStorage.setItem('orders', JSON.stringify(orders));
-    loadOrders();
-  }
-
-  function updateSubtotal() {
-    let subtotal = 0;
-    let orders = JSON.parse(localStorage.getItem('orders')) || [];
-    orders.forEach(item => {
-      subtotal += item.qty * item.price;
-    });
     document.querySelector('.subtotal').textContent = 'SUBTOTAL: ₱' + subtotal.toFixed(2);
-  }
 
-  window.onload = loadOrders;
+  } catch (err) {
+    orderList.innerHTML = '<div>Failed to load orders.</div>';
+    document.querySelector('.subtotal').textContent = 'SUBTOTAL: ₱0.00';
+  }
+}
+
+window.onload = loadOrders;
+
+// Proceed button - call backend to "checkout" cart orders, then go to status page
+document.querySelector('.proceed-btn').addEventListener('click', async function() {
+  const token = localStorage.getItem('token');
+  if (!token) {
+    window.location.href = 'status.html';
+    return;
+  }
+  // Call backend to move "cart" requests to "pending"
+  await fetch('/api/requests/checkout', {
+    method: 'POST',
+    headers: { 'Authorization': 'Bearer ' + token }
+  });
+  window.location.href = 'status.html';
+});
 </script>
 
 </body>
