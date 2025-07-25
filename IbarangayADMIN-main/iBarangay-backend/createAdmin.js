@@ -1,7 +1,7 @@
 require('dotenv').config();
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
-const Admin = require('./admin');
+const Admin = require('./Admin');
 
 async function createAdmin() {
   await mongoose.connect(process.env.MONGO_URI);

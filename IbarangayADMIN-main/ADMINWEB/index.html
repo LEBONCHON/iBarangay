@@ -204,6 +204,25 @@
 <script src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script src="js/api.js"></script>
 <script>
+// --- SESSION CHECK: Only allow access if admin is logged in ---
+(async function() {
+    try {
+        const res = await fetch('/api/admin/session', { credentials: 'include' });
+        const data = await res.json();
+        if (!data.loggedIn) {
+            window.location.href = 'admin-login.html';
+        } else {
+            // Optionally show admin email or name
+            document.getElementById('adminName').textContent = data.user || "Admin";
+            // Load dashboard if session valid
+            updateDashboardCounts();
+            renderOrderAnalytics();
+        }
+    } catch (err) {
+        window.location.href = 'admin-login.html';
+    }
+})();
+
 // Helper: format today's date as YYYY/MM/DD
 function todaysDate() {
     const d = new Date();
@@ -212,13 +231,7 @@ function todaysDate() {
 
 // Fetch and update dashboard counts using backend API
 async function updateDashboardCounts() {
-    const token = localStorage.getItem('adminToken');
-    if (!token) {
-        window.location.href = 'admin-login.html';
-        return;
-    }
-
-    const data = await getAllRequests(token);
+    const data = await getAllRequests();
     const orders = Array.isArray(data.requests) ? data.requests : [];
 
     const today = todaysDate();
@@ -248,9 +261,7 @@ async function updateDashboardCounts() {
 
 // Render order analytics (per category) using backend API
 async function renderOrderAnalytics() {
-    const token = localStorage.getItem('adminToken');
-    if (!token) return;
-    const data = await getAllRequests(token);
+    const data = await getAllRequests();
     const orders = Array.isArray(data.requests) ? data.requests : [];
 
     // Count per category
@@ -291,12 +302,6 @@ document.getElementById('completeRequestBtn').onclick = function(e) {
     e.preventDefault();
     window.location.href = "table.html";
 };
-
-// On load: fetch dashboard data
-document.addEventListener('DOMContentLoaded', () => {
-    updateDashboardCounts();
-    renderOrderAnalytics();
-});
 </script>
 </body>
 </html>

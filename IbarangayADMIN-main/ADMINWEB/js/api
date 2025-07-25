@@ -1,13 +1,14 @@
 const ADMIN_API_URL = 'http://localhost:3000/api/admin';
 const REQUESTS_API_URL = 'http://localhost:3000/api/requests';
 
-// Admin Login
+// Admin Login (session-based)
 async function adminLogin(credentials) {
   try {
     const response = await fetch(`${ADMIN_API_URL}/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(credentials)
+      body: JSON.stringify(credentials),
+      credentials: 'include' // IMPORTANT for session cookies
     });
     return await response.json();
   } catch (error) {
@@ -16,11 +17,11 @@ async function adminLogin(credentials) {
   }
 }
 
-// Get All Requests (example—requires admin token)
-async function getAllRequests(token) {
+// Get All Requests (session-based)
+async function getAllRequests() {
   try {
     const response = await fetch(`${REQUESTS_API_URL}/all`, {
-      headers: { Authorization: `Bearer ${token}` }
+      credentials: 'include'
     });
     return await response.json();
   } catch (error) {
@@ -29,14 +30,28 @@ async function getAllRequests(token) {
   }
 }
 
-// Logout
-function adminLogout() {
-  localStorage.removeItem('adminToken');
-  localStorage.removeItem('admin');
+// Logout (session-based)
+async function adminLogout() {
+  try {
+    await fetch(`${ADMIN_API_URL}/logout`, {
+      method: 'POST',
+      credentials: 'include'
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
   window.location.href = 'admin-login.html';
 }
 
-// Utility: check if admin is logged in
-function isAdminLoggedIn() {
-  return localStorage.getItem('adminToken') !== null;
+// Utility: check if admin is logged in (session-based)
+async function isAdminLoggedIn() {
+  try {
+    const res = await fetch(`${ADMIN_API_URL}/session`, {
+      credentials: 'include'
+    });
+    const data = await res.json();
+    return data.loggedIn;
+  } catch (error) {
+    return false;
+  }
 }

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Admin Login Redirect</title>
+  <script>
+    // On page load, check session
+    document.addEventListener('DOMContentLoaded', async () => {
+      try {
+        const res = await fetch('/api/admin/session', { credentials: 'include' });
+        const data = await res.json();
+        if (data.loggedIn) {
+          // Already logged in as admin, redirect to the admin dashboard
+          window.location.replace('/ADMINWEB/index.html');
+        } else {
+          // Not logged in, redirect to your main login page or show login form
+          window.location.replace('/login.html');
+        }
+      } catch (e) {
+        // On error, redirect to login
+        window.location.replace('/login.html');
+      }
+    });
+  </script>
+</head>
+<body>
+  <p>Redirecting...</p>
+</body>
+</html>
