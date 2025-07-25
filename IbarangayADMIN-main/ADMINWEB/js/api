@@ -1,0 +1,57 @@
+const ADMIN_API_URL = 'http://localhost:3000/api/admin';
+const REQUESTS_API_URL = 'http://localhost:3000/api/requests';
+
+// Admin Login (session-based)
+async function adminLogin(credentials) {
+  try {
+    const response = await fetch(`${ADMIN_API_URL}/login`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(credentials),
+      credentials: 'include' // IMPORTANT for session cookies
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Admin login error:', error);
+    return { success: false, message: 'Network error during admin login' };
+  }
+}
+
+// Get All Requests (session-based)
+async function getAllRequests() {
+  try {
+    const response = await fetch(`${REQUESTS_API_URL}/all`, {
+      credentials: 'include'
+    });
+    return await response.json();
+  } catch (error) {
+    console.error('Fetch requests error:', error);
+    return { success: false, message: 'Network error during fetch' };
+  }
+}
+
+// Logout (session-based)
+async function adminLogout() {
+  try {
+    await fetch(`${ADMIN_API_URL}/logout`, {
+      method: 'POST',
+      credentials: 'include'
+    });
+  } catch (error) {
+    console.error('Logout error:', error);
+  }
+  window.location.href = 'admin-login.html';
+}
+
+// Utility: check if admin is logged in (session-based)
+async function isAdminLoggedIn() {
+  try {
+    const res = await fetch(`${ADMIN_API_URL}/session`, {
+      credentials: 'include'
+    });
+    const data = await res.json();
+    return data.loggedIn;
+  } catch (error) {
+    return false;
+  }
+}
