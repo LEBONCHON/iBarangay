@@ -1,6 +1,8 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
+const Transaction = require('./transactionModel'); // or create a LoginLog model
+
 
 const registerUser = async (req, res) => {
   const { name, email, password } = req.body;
@@ -44,6 +46,20 @@ const loginUser = async (req, res) => {
     redirectUrl
   });
 };
+
+// After successful login
+await Transaction.create({
+  action: 'login',
+  userId: user._id,
+  description: 'User logged in'
+});
+
+// After failed login
+await Transaction.create({
+  action: 'login-failed',
+  userId: null,
+  description: `Failed login for email: ${email}`
+});
 
 module.exports = { registerUser, loginUser };
 

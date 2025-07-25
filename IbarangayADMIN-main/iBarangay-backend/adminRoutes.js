@@ -1,57 +1,48 @@
 const express = require('express');
 const router = express.Router();
-const jwt = require('jsonwebtoken');
+const Admin = require('./models/Admin'); // Adjust the path if needed
 
-// Debug route
-router.get('/test', (req, res) => {
-  res.json({ message: 'Admin routes working' });
-});
-
-// Admin login (credentials set in .env)
+// Admin login (checks MongoDB, uses session)
 router.post('/login', async (req, res) => {
   try {
-    console.log('Admin login request received');
-    
     const { username, password } = req.body;
-    
-    // Check against environment variables
-    const adminUsername = process.env.ADMIN_USERNAME;
-    const adminPassword = process.env.ADMIN_PASSWORD;
-    
-    if (username !== adminUsername || password !== adminPassword) {
-      console.log('Invalid admin credentials');
-      return res.status(401).json({
-        success: false,
-        message: 'Invalid admin credentials'
-      });
+    const admin = await Admin.findOne({ username });
+    if (!admin) {
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
     }
-    
-    console.log('Admin login successful');
-    
-    // Generate JWT token for admin
-    const token = jwt.sign(
-      { role: 'admin' },
-      process.env.JWT_SECRET,
-      { expiresIn: '1d' }
-    );
-    
-    res.status(200).json({
-      success: true,
-      message: 'Admin login successful',
-      token,
-      user: {
-        username: adminUsername,
-        role: 'admin'
-      }
-    });
-    
-  } catch (error) {
-    console.error('Admin login error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Server error during admin login'
-    });
+    const match = await admin.comparePassword(password);
+    if (!match) {
+      return res.status(401).json({ success: false, message: 'Invalid credentials' });
+    }
+    // Set session
+    req.session.adminId = admin._id;
+    req.session.adminUsername = admin.username;
+    res.json({ success: true, message: 'Login successful', user: { username: admin.username } });
+  } catch (err) {
+    console.error('Login error:', err);
+    res.status(500).json({ success: false, message: 'Server error' });
   }
+});
+
+// Logout route
+router.post('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.clearCookie('connect.sid');
+    res.json({ success: true, message: 'Logged out' });
+  });
+});
+
+// Check session route
+router.get('/session', (req, res) => {
+  res.json({ loggedIn: !!req.session.adminId, user: req.session.adminUsername });
+});
+
+// Example protected route
+router.get('/protected', (req, res) => {
+  if (!req.session.adminId) {
+    return res.status(401).json({ error: "Not authenticated" });
+  }
+  res.json({ message: "You are authenticated as admin." });
 });
 
 module.exports = router;
