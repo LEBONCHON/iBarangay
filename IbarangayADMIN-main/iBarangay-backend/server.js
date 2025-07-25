@@ -16,6 +16,9 @@ try {
 }
 const requestRoutes = require('./requestRoutes');
 
+// ⬇️ Import your Admin model
+const Admin = require('./admin');
+
 const app = express();
 
 // ✅ Middleware
@@ -49,6 +52,53 @@ app.use(session({
   cookie: { maxAge: 1000 * 60 * 60 * 2, httpOnly: true, sameSite: 'lax' }
 }));
 
+// ⬇️ CENTRALIZED LOGIN ENDPOINT (for /login.html)
+const bcrypt = require('bcryptjs');
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+  const admin = await Admin.findOne({ username });
+  if (!admin) return res.status(401).json({ message: 'Invalid username or password' });
+  const isMatch = await bcrypt.compare(password, admin.password);
+  if (!isMatch) return res.status(401).json({ message: 'Invalid username or password' });
+
+  req.session.userId = admin._id;
+  req.session.role = 'admin';
+  res.json({ message: 'Login successful', role: 'admin' });
+});
+
+// ⬇️ SESSION CHECK ENDPOINT
+app.get('/api/check-session', (req, res) => {
+  if (req.session && req.session.userId && req.session.role === 'admin') {
+    res.json({ loggedIn: true, role: 'admin' });
+  } else {
+    res.status(401).json({ loggedIn: false });
+  }
+});
+
+// ⬇️ LOGOUT ENDPOINT
+app.post('/api/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.json({ message: 'Logged out' });
+  });
+});
+
+// ⬇️ PROTECT /adminweb (must come BEFORE static serving)
+app.use('/adminweb', (req, res, next) => {
+  if (req.session && req.session.userId && req.session.role === 'admin') {
+    next();
+  } else {
+    // If AJAX, send 401. If browser GET, redirect.
+    if (req.accepts(['html', 'json']) === 'json' || req.xhr) {
+      res.status(401).json({ message: 'Unauthorized' });
+    } else {
+      res.redirect('/login.html');
+    }
+  }
+});
+
+// ✅ Serve static adminweb frontend at /adminweb
+app.use('/adminweb', express.static(path.join(__dirname, '../adminweb')));
+
 // ✅ API Routes
 app.use('/api/users', userRoutes);
 if (adminRoutes) {
@@ -58,9 +108,6 @@ app.use('/api/requests', requestRoutes);
 
 // ✅ Serve uploaded files (for download/view in profile)
 app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
-
-// ✅ Serve static adminweb frontend at /adminweb (case-insensitive and supports all admin pages)
-app.use('/adminweb', express.static(path.join(__dirname, '../adminweb')));
 
 // ✅ Serve static user frontend at /
 app.use(express.static(path.join(__dirname, '../FrontiBarangay')));

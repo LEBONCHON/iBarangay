@@ -66,13 +66,28 @@
     </div>
 <script src="assets/bootstrap/js/bootstrap.min.js"></script>
 <script>
-document.getElementById('loginForm').addEventListener('submit', function(e){
+document.getElementById('loginForm').addEventListener('submit', async function(e){
     e.preventDefault();
-    // Set dummy "logged in" flag
-    sessionStorage.setItem('ibarangay_loggedin', '1');
-    // Save username for basic profile demo
-    localStorage.setItem('ibarangay_profile', JSON.stringify({ name: document.getElementById('loginUser').value }));
-    window.location.href = "index.html";
+
+    const username = document.getElementById('loginUser').value;
+    const password = document.getElementById('loginPass').value;
+
+    try {
+        const response = await fetch('/api/admin/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password }),
+            credentials: 'include'
+        });
+
+        if (response.ok) {
+            window.location.href = "index.html";
+        } else {
+            document.getElementById('loginError').style.display = 'block';
+        }
+    } catch (err) {
+        document.getElementById('loginError').style.display = 'block';
+    }
 });
 </script>
 </body>
