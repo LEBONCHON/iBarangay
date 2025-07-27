@@ -180,12 +180,22 @@ async function loadOrders(searchTerm = "") {
     for (const order of orders) {
         const requester = order.residentId || {};
         const requestedBy = `${safe(requester.firstName)} ${safe(requester.lastName)}${requester.email ? " (" + requester.email + ")" : ""}`;
+
+        let firstName = "", lastName = "";
+        if (order.documentType && order.documentType.toLowerCase().includes("barangay id")) {
+            firstName = order["bar_FirstName"] || order["bar_firstName"] || "";
+            lastName = order["bar_LastName"] || order["bar_lastName"] || "";
+        } else {
+            firstName = safe(order.res_FirstName) || safe(order.firstName);
+            lastName = safe(order.res_LastName) || safe(order.lastName);
+        }
+
         const tr = document.createElement("tr");
         tr.classList.add("clickable-row");
         tr.innerHTML = `
             <td>${order.dateRequested ? new Date(order.dateRequested).toLocaleString() : ""}</td>
-            <td>${safe(order.res_FirstName)}</td>
-            <td>${safe(order.res_LastName)}</td>
+            <td>${safe(firstName)}</td>
+            <td>${safe(lastName)}</td>
             <td>${safe(order.documentType)}</td>
             <td>${safe(order.status)}</td>
             <td>${requestedBy}</td>

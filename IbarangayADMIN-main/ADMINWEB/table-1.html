@@ -25,6 +25,9 @@
             background: #C7B98E !important;
             border-color: #C7B98E !important;
             color: #000 !important;
+            border-radius: 6px !important;
+            min-width: 100px;
+            font-size: 1.15rem;
         }
         .btn-c7b98e:active, .btn-c7b98e:focus, .btn-c7b98e:hover,
         .search-btn-custom:active, .search-btn-custom:focus, .search-btn-custom:hover {
@@ -46,6 +49,11 @@
         .request-image { max-width: 300px; max-height: 300px; margin: 5px 0; border-radius: 6px; }
         .details-table th { width: 220px; text-align: right; vertical-align: top; }
         .details-table td { font-weight: 500; }
+        .action-btns {
+            display: flex;
+            gap: 18px;
+            justify-content: flex-end;
+        }
     </style>
 </head>
 <body id="page-top">
@@ -131,8 +139,11 @@
                                     <option value="completed">Completed</option>
                                 </select>
                             </div>
-                            <button type="submit" class="btn btn-success">Submit</button>
-                            <span id="statusMsg" class="ms-2"></span>
+                            <div class="action-btns mt-3">
+                                <button type="submit" class="btn btn-c7b98e" id="submitBtn">Submit</button>
+                                <a href="table.html" class="btn btn-c7b98e">Back</a>
+                                <span id="statusMsg" class="ms-2"></span>
+                            </div>
                         </form>
                     </div>
                 </div>
@@ -151,58 +162,91 @@
 <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
 const API_BASE = "http://localhost:3000/api/requests";
-
 function getQueryParam(name) {
     return new URLSearchParams(window.location.search).get(name);
 }
-
-function safe(val) { return val || ""; }
-
+function safe(val) { return (val === null || val === undefined) ? "" : val; }
 function isImage(filename) {
     const ext = filename.split('.').pop().toLowerCase();
     return ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext);
 }
-
 let currentRequest = null;
 let requestId = getQueryParam('id');
 
-// Helper: prettify keys for labels
+/**
+ * Prettifies keys for display, removing "Bar ", "Bar_", "barangayID_", "res_" prefixes.
+ * - Bar Last Name/Bar_Last_Name => Last Name
+ * - barangayID_LastName => Last Name
+ * - Bar Declaration on => (will be filtered out)
+ * - etc.
+ */
 function prettifyKey(key) {
-    // Remove res_ prefix
-    if (key.startsWith('res_')) key = key.slice(4);
-    // Insert spaces before uppercase letters and capitalize
-    return key
-        .replace(/([A-Z])/g, ' $1') // Add space before caps
-        .replace(/^./, c => c.toUpperCase()) // Capitalize first letter
-        .replace(/\bOf\b/g, 'Of')   // Keep "Of" lowercase (optional)
-        .replace(/\s+/g, ' ')       // Clean up multiple spaces
-        .trim();
+    // Remove "bar_" or "bar " at the start (case-insensitive)
+    key = key.replace(/^bar[_ ]/i, '');
+    // Remove "barangayid_" or "res_" at start if present
+    key = key.replace(/^barangayid[_ ]?/i, '');
+    key = key.replace(/^res[_ ]?/i, '');
+    // Remove leading underscores, then replace underscores with spaces
+    key = key.replace(/^_+/, '').replace(/_/g, ' ');
+    // Split camelCase into words
+    key = key.replace(/([a-z])([A-Z])/g, '$1 $2');
+    // Capitalize first letter of each word
+    key = key.replace(/\b\w/g, l => l.toUpperCase());
+    if (key.toLowerCase() === "id") return "ID";
+    if (key === "Document Type") return "Order Type";
+    return key.trim();
 }
 
-async function fetchRequest(id) {
-    try {
-        const res = await axios.get(`${API_BASE}/${id}`, { withCredentials: true });
-        return res.data;
-    } catch (err) {
-        console.error(err);
-        return null;
-    }
+// Remove declaration fields by key name (case insensitive, anywhere in key)
+function shouldShowField(key) {
+    const lower = key.toLowerCase();
+    if (lower.includes('declaration')) return false;
+    if (key === 'files' || key === '__v' || key === '_id') return false;
+    return true;
 }
 
-// Display all fields in a pretty way
+// Preferred order for important fields, rest follow
+const preferredOrder = [
+    'documentType', 'status', 'dateRequested', 'dateProcessed', 'firstName', 'lastName',
+    'email', 'address', 'category', 'orderNumber', 'occupation', 'dateOfBirth'
+];
+function getOrderedFields(obj) {
+    // Put preferred fields first, then Bar_ and Bar fields, then the rest
+    const keys = Object.keys(obj).filter(k =>
+        shouldShowField(k) && typeof obj[k] !== 'object'
+    );
+    // Add Bar_ and Bar fields after preferred
+    const barFields = keys.filter(k => /^bar[ _]/i.test(k));
+    const otherKeys = keys.filter(k => !preferredOrder.includes(k) && !barFields.includes(k));
+    const ordered = [];
+    preferredOrder.forEach(f => {
+        if (keys.includes(f)) ordered.push(f);
+    });
+    barFields.forEach(f => {
+        if (!ordered.includes(f)) ordered.push(f);
+    });
+    otherKeys.forEach(f => {
+        if (!ordered.includes(f)) ordered.push(f);
+    });
+    return ordered;
+}
+
 function renderRequestDetails(order) {
     let html = '<table class="table table-bordered details-table">';
-    for (const [key, value] of Object.entries(order)) {
-        if (key === 'files' || key === '__v' || key === '_id') continue;
-        if (typeof value === 'object' && value !== null) continue;
-        html += `<tr><th>${prettifyKey(key)}</th><td>${safe(value)}</td></tr>`;
-    }
+    const fields = getOrderedFields(order);
+    fields.forEach((key) => {
+        let value = safe(order[key]);
+        // Pretty print dates
+        if ((/date/i).test(key) && value && !isNaN(Date.parse(value))) {
+            value = new Date(value).toLocaleString();
+        }
+        html += `<tr><th>${prettifyKey(key)}</th><td>${value}</td></tr>`;
+    });
     html += '</table>';
     document.getElementById('request-details').innerHTML = html;
     document.getElementById('docTypeLabel').innerText = `Order Info (${safe(order.documentType)})`;
 }
 
-// Show all uploaded files (images as preview, others as download)
 function renderFiles(filesObj) {
     if (!filesObj || Object.keys(filesObj).length === 0) {
         document.getElementById('uploaded-files').innerHTML = "<em>No files uploaded.</em>";
@@ -221,6 +265,15 @@ function renderFiles(filesObj) {
     document.getElementById('uploaded-files').innerHTML = html;
 }
 
+async function fetchRequest(id) {
+    try {
+        const res = await axios.get(`${API_BASE}/${id}`, { withCredentials: true });
+        return res.data;
+    } catch (err) {
+        console.error(err);
+        return null;
+    }
+}
 async function updateStatus(event) {
     event.preventDefault();
     const status = document.getElementById('statusSelect').value;
@@ -233,7 +286,6 @@ async function updateStatus(event) {
         document.getElementById('statusMsg').innerText = "Error updating status!";
     }
 }
-
 async function uploadFile(event) {
     event.preventDefault();
     const fileInput = document.getElementById('newFile');
@@ -251,7 +303,6 @@ async function uploadFile(event) {
         alert("File upload failed.");
     }
 }
-
 async function loadRequest() {
     if (!requestId) { document.body.innerHTML = "<h2>Request ID missing from URL.</h2>"; return; }
     const order = await fetchRequest(requestId);
@@ -261,7 +312,6 @@ async function loadRequest() {
     renderFiles(order.files);
     document.getElementById('statusSelect').value = order.status || "cart";
 }
-
 document.getElementById('uploadForm').onsubmit = uploadFile;
 document.getElementById('statusForm').onsubmit = updateStatus;
 window.addEventListener("DOMContentLoaded", loadRequest);
