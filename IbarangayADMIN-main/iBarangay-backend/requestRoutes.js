@@ -1,64 +1,94 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const router = express.Router();
-const multer = require('multer');
-const upload = multer({ dest: 'uploads/' }); // or customize storage as needed
 const Request = require('./requestFile');
-const auth = require('./authMiddleware');
+const multer = require('multer');
+const upload = multer({ dest: 'uploads/' });
 
-// CREATE a new request (user submits a document request)
-router.post('/', auth, upload.any(), async (req, res) => {
+// Get all requests (with resident info)
+router.get('/all', async (req, res) => {
   try {
-    // Save all form fields (from req.body) and all file info (from req.files)
-    const files = {};
-    if (req.files && req.files.length) {
-      req.files.forEach(f => {
-        files[f.fieldname] = {
-          originalname: f.originalname,
-          mimetype: f.mimetype,
-          filename: f.filename,
-          path: f.path,
-          size: f.size
-        };
-      });
-    }
-    const requestData = {
-      residentId: new mongoose.Types.ObjectId(req.user.id),
-      ...req.body, // saves ALL fields from the form
-      files,       // saves ALL uploaded files (grouped by input name)
-      status: 'cart' // <-- NEW: Start in 'cart' status
-    };
-    const newRequest = new Request(requestData);
-    await newRequest.save();
-    res.status(201).json({ success: true, request: newRequest });
-  } catch (error) {
-    console.error('Error creating request:', error);
-    res.status(500).json({ success: false, message: 'Server error while creating request.' });
-  }
-});
-
-// GET all requests for the logged-in user
-router.get('/mine', auth, async (req, res) => {
-  try {
-    const requests = await Request.find({ residentId: req.user.id }).sort({ createdAt: -1 });
+    const requests = await Request.find()
+      .sort({ dateRequested: -1 })
+      .populate('residentId', 'firstName lastName email');
     res.json(requests);
-  } catch (error) {
-    console.error('Error fetching user requests:', error);
-    res.status(500).json({ success: false, message: 'Server error while fetching requests.' });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 
-// CHECKOUT: Move all 'cart' requests to 'pending' for this user
-router.post('/checkout', auth, async (req, res) => {
+// Get a single request by ID (with resident info)
+router.get('/:id', async (req, res) => {
   try {
-    await Request.updateMany(
-      { residentId: req.user.id, status: 'cart' },
-      { $set: { status: 'pending' } }
+    const request = await Request.findById(req.params.id)
+      .populate('residentId', 'firstName lastName email');
+    if (!request) return res.status(404).json({ message: "Request not found" });
+    res.json(request);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+// Update the status of a request
+router.patch('/:id/status', async (req, res) => {
+  try {
+    const { status } = req.body;
+    const request = await Request.findByIdAndUpdate(
+      req.params.id,
+      { status },
+      { new: true }
     );
+    if (!request) return res.status(404).json({ message: "Request not found" });
+    res.json({ success: true, request });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+// Upload a file to a request (can be extended to support multiple files)
+router.post('/:id/upload', upload.single('file'), async (req, res) => {
+  try {
+    if (!req.file) return res.status(400).json({ message: "No file uploaded" });
+    const fileData = {
+      originalname: req.file.originalname,
+      mimetype: req.file.mimetype,
+      filename: req.file.filename,
+      path: req.file.path,
+      size: req.file.size
+    };
+    const request = await Request.findById(req.params.id);
+    if (!request) return res.status(404).json({ message: "Request not found" });
+
+    if (!request.files || typeof request.files !== "object") request.files = {};
+    // You can allow front-end to specify the field name or just use a default.
+    const field = req.body.field || 'uploadedFile' + Date.now();
+    request.files[field] = fileData;
+    await request.save();
+
+    res.json({ success: true, file: fileData });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
+
+// Create a new request (example, adjust as needed)
+router.post('/', async (req, res) => {
+  try {
+    const request = new Request(req.body);
+    await request.save();
+    res.status(201).json(request);
+  } catch (err) {
+    res.status(400).json({ message: "Error creating request", error: err.message });
+  }
+});
+
+// (Optional) Delete a request by ID
+router.delete('/:id', async (req, res) => {
+  try {
+    const request = await Request.findByIdAndDelete(req.params.id);
+    if (!request) return res.status(404).json({ message: "Request not found" });
     res.json({ success: true });
   } catch (err) {
-    console.error('Error during checkout:', err);
-    res.status(500).json({ success: false, message: 'Checkout failed' });
+    res.status(500).json({ message: "Server error", error: err.message });
   }
 });
 

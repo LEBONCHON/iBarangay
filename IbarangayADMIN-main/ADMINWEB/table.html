@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Table - Orders</title>
+    <title>Orders Table - iBarangay</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
     <style>
@@ -44,6 +44,11 @@
             border-color: #cfc087 !important;
             color: #000 !important;
         }
+        .modal-lg { max-width: 700px; }
+        .request-image { max-width: 100%; max-height: 200px; margin: 5px 0; border-radius: 6px; }
+        pre { font-size: 10px; }
+        tr.clickable-row { cursor: pointer; }
+        tr.clickable-row:hover { background-color: #f1e7c6; }
     </style>
 </head>
 <body id="page-top">
@@ -67,7 +72,6 @@
     </nav>
     <div class="d-flex flex-column" id="content-wrapper">
         <div id="content">
-            <!-- Topbar with search, bell, and user -->
             <nav class="navbar navbar-expand bg-white shadow mb-4 topbar">
                 <div class="container-fluid">
                     <button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
@@ -78,7 +82,6 @@
                         </div>
                     </form>
                     <ul class="navbar-nav flex-nowrap ms-auto">
-                        <!-- Alerts Dropdown -->
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="badge bg-danger badge-counter" id="pending-orders-badge">0</span>
@@ -104,7 +107,6 @@
                     </ul>
                 </div>
             </nav>
-            <!-- End Topbar -->
             <div class="container-fluid">
                 <h3 class="text-dark mb-4">Orders Table</h3>
                 <div class="card shadow">
@@ -116,14 +118,12 @@
                             <table class="table my-0" id="orderTable">
                                 <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Address</th>
-                                        <th>Occupation</th>
-                                        <th>Category</th>
-                                        <th>Orders</th>
-                                        <th>Status</th>
                                         <th>Date Requested</th>
-                                        <th>Order Number</th>
+                                        <th>First Name</th>
+                                        <th>Last Name</th>
+                                        <th>Request Type</th>
+                                        <th>Status</th>
+                                        <th>Requested By (Name/Email)</th>
                                     </tr>
                                 </thead>
                                 <tbody id="orders-tbody">
@@ -131,14 +131,12 @@
                                 </tbody>
                                 <tfoot>
                                     <tr>
-                                        <td><strong>Name</strong></td>
-                                        <td><strong>Address</strong></td>
-                                        <td><strong>Occupation</strong></td>
-                                        <td><strong>Category</strong></td>
-                                        <td><strong>Orders</strong></td>
-                                        <td><strong>Status</strong></td>
                                         <td><strong>Date Requested</strong></td>
-                                        <td><strong>Order Number</strong></td>
+                                        <td><strong>First Name</strong></td>
+                                        <td><strong>Last Name</strong></td>
+                                        <td><strong>Request Type</strong></td>
+                                        <td><strong>Status</strong></td>
+                                        <td><strong>Requested By (Name/Email)</strong></td>
                                     </tr>
                                 </tfoot>
                             </table>
@@ -157,125 +155,48 @@
 </div>
 
 <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-const ORDERS_KEY = "ibarangay_orders";
-function getSampleOrders() {
-    return [
-        {
-            orderNumber: "395688",
-            name: "Juan, Andres",
-            address: "69 T.Castillo Street Cor.Katipunan Road, Quezon City",
-            occupation: "Accountant",
-            category: "Document",
-            orders: "Business Permit",
-            status: "Pending",
-            dateRequested: "2025/06/01"
-        },
-        {
-            orderNumber: "124148",
-            name: "Jomar, Renzo",
-            address: "General Trias Drive, Rosario",
-            occupation: "Software Developer",
-            category: "Document",
-            orders: "Certificate of Residency",
-            status: "Completed",
-            dateRequested: "2025/05/30"
-        },
-        {
-            orderNumber: "789101",
-            name: "Jaycee Corciega",
-            address: "Afelor Street, Tan Building, San Roque, Iriga",
-            occupation: "Businessman",
-            category: "Document",
-            orders: "Business Permit",
-            status: "Pending",
-            dateRequested: "2025/06/02"
-        },
-        {
-            orderNumber: "456212",
-            name: "Maria Santos",
-            address: "23 Mabuhay Avenue, Makati",
-            occupation: "Teacher",
-            category: "Document",
-            orders: "Barangay Clearance",
-            status: "Pending",
-            dateRequested: "2025/05/31"
-        },
-        {
-            orderNumber: "987654",
-            name: "Pedro Cruz",
-            address: "77 Bonifacio St., Pasig",
-            occupation: "Driver",
-            category: "Document",
-            orders: "Indigency Certificate",
-            status: "Completed",
-            dateRequested: "2025/05/28"
-        }
-    ];
+const API_URL = "http://localhost:3000/api/requests/all"; // backend connection
+
+function safe(val) { return val || ""; }
+
+async function fetchOrders(searchTerm="") {
+    try {
+        let url = API_URL;
+        if (searchTerm) url += "?search=" + encodeURIComponent(searchTerm);
+        const res = await axios.get(url, { withCredentials: true });
+        return res.data;
+    } catch (err) {
+        console.error(err);
+        return [];
+    }
 }
-function initOrders() {
-    // Always reset sample data for demo purposes (for this demo only)
-    localStorage.setItem(ORDERS_KEY, JSON.stringify(getSampleOrders()));
-}
-function getOrdersFilteredBySearch(orders, searchTerm) {
-    if (!searchTerm) return orders;
-    const term = searchTerm.toLowerCase();
-    return orders.filter(order =>
-        (order.name && order.name.toLowerCase().includes(term)) ||
-        (order.address && order.address.toLowerCase().includes(term)) ||
-        (order.occupation && order.occupation.toLowerCase().includes(term)) ||
-        (order.category && order.category.toLowerCase().includes(term)) ||
-        (order.orders && order.orders.toLowerCase().includes(term)) ||
-        (order.status && order.status.toLowerCase().includes(term)) ||
-        (order.dateRequested && order.dateRequested.toLowerCase().includes(term)) ||
-        (order.orderNumber && order.orderNumber.toLowerCase().includes(term))
-    );
-}
-function loadOrders(searchTerm="") {
-    const orders = getOrdersFilteredBySearch(JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]"), searchTerm);
+
+async function loadOrders(searchTerm = "") {
+    const orders = await fetchOrders(searchTerm);
     const tbody = document.getElementById('orders-tbody');
     tbody.innerHTML = "";
     for (const order of orders) {
+        const requester = order.residentId || {};
+        const requestedBy = `${safe(requester.firstName)} ${safe(requester.lastName)}${requester.email ? " (" + requester.email + ")" : ""}`;
         const tr = document.createElement("tr");
-        tr.classList.add("pointer");
-        tr.setAttribute("data-order-number", order.orderNumber);
+        tr.classList.add("clickable-row");
         tr.innerHTML = `
-            <td>${order.name}</td>
-            <td>${order.address || ""}</td>
-            <td>${order.occupation || ""}</td>
-            <td>${order.category}</td>
-            <td>${order.orders}</td>
-            <td class="order-status" data-order-number="${order.orderNumber}">${order.status}</td>
-            <td>${order.dateRequested}</td>
-            <td>#${order.orderNumber}</td>
+            <td>${order.dateRequested ? new Date(order.dateRequested).toLocaleString() : ""}</td>
+            <td>${safe(order.res_FirstName)}</td>
+            <td>${safe(order.res_LastName)}</td>
+            <td>${safe(order.documentType)}</td>
+            <td>${safe(order.status)}</td>
+            <td>${requestedBy}</td>
         `;
+        tr.onclick = function() {
+            window.location.href = "table-1.html?id=" + encodeURIComponent(order._id);
+        };
         tbody.appendChild(tr);
     }
-    document.querySelectorAll('tr[data-order-number]').forEach(row => {
-        row.addEventListener('click', function () {
-            const orderNum = row.getAttribute('data-order-number');
-            window.location.href = `table-1.html?order=${orderNum}`;
-        });
-    });
-    updateBell();
 }
-function updateBell() {
-    const orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
-    const pending = orders.filter(o=>o.status==="Pending");
-    document.getElementById('pending-orders-badge').textContent = pending.length;
-    const pendingList = document.getElementById('pending-orders-list');
-    if (pendingList) {
-        if (pending.length === 0) {
-            pendingList.innerHTML = "<div class='px-3 py-2'>No pending orders</div>";
-        } else {
-            pendingList.innerHTML = pending.map(o =>
-                `<div class='px-3 py-1'>#${o.orderNumber} - ${o.name}</div>`
-            ).join('');
-        }
-    }
-}
-initOrders();
-loadOrders();
+
 document.getElementById('searchBtn').onclick = function() {
     const val = document.getElementById('searchInput').value;
     loadOrders(val);
@@ -285,6 +206,10 @@ document.getElementById('searchInput').addEventListener("keypress", function(e) 
         e.preventDefault();
         document.getElementById('searchBtn').click();
     }
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+    loadOrders();
 });
 </script>
 </body>
