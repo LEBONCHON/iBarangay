@@ -54,6 +54,22 @@
             gap: 18px;
             justify-content: flex-end;
         }
+        .file-preview-container {
+            margin-bottom: 1.5rem;
+        }
+        .file-preview-container iframe,
+        .file-preview-container embed {
+            border: 1px solid #eee;
+            border-radius: 6px;
+            width: 100%;
+            min-height: 350px;
+            max-height: 800px;
+        }
+        .file-preview-container object {
+            width: 100%;
+            min-height: 350px;
+            max-height: 800px;
+        }
     </style>
 </head>
 <body id="page-top">
@@ -170,34 +186,35 @@ function isImage(filename) {
     const ext = filename.split('.').pop().toLowerCase();
     return ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext);
 }
+function isPDF(filename) {
+    return filename.toLowerCase().endsWith('.pdf');
+}
+function isText(filename) {
+    return filename.toLowerCase().endsWith('.txt');
+}
+function isOffice(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    return ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext);
+}
 let currentRequest = null;
 let requestId = getQueryParam('id');
 
 /**
  * Prettifies keys for display, removing "Bar ", "Bar_", "barangayID_", "res_" prefixes.
- * - Bar Last Name/Bar_Last_Name => Last Name
- * - barangayID_LastName => Last Name
- * - Bar Declaration on => (will be filtered out)
- * - etc.
  */
 function prettifyKey(key) {
-    // Remove "bar_" or "bar " at the start (case-insensitive)
     key = key.replace(/^bar[_ ]/i, '');
-    // Remove "barangayid_" or "res_" at start if present
     key = key.replace(/^barangayid[_ ]?/i, '');
     key = key.replace(/^res[_ ]?/i, '');
-    // Remove leading underscores, then replace underscores with spaces
     key = key.replace(/^_+/, '').replace(/_/g, ' ');
-    // Split camelCase into words
     key = key.replace(/([a-z])([A-Z])/g, '$1 $2');
-    // Capitalize first letter of each word
     key = key.replace(/\b\w/g, l => l.toUpperCase());
     if (key.toLowerCase() === "id") return "ID";
     if (key === "Document Type") return "Order Type";
     return key.trim();
 }
 
-// Remove declaration fields by key name (case insensitive, anywhere in key)
+// Remove declaration fields by key name
 function shouldShowField(key) {
     const lower = key.toLowerCase();
     if (lower.includes('declaration')) return false;
@@ -205,17 +222,14 @@ function shouldShowField(key) {
     return true;
 }
 
-// Preferred order for important fields, rest follow
 const preferredOrder = [
     'documentType', 'status', 'dateRequested', 'dateProcessed', 'firstName', 'lastName',
     'email', 'address', 'category', 'orderNumber', 'occupation', 'dateOfBirth'
 ];
 function getOrderedFields(obj) {
-    // Put preferred fields first, then Bar_ and Bar fields, then the rest
     const keys = Object.keys(obj).filter(k =>
         shouldShowField(k) && typeof obj[k] !== 'object'
     );
-    // Add Bar_ and Bar fields after preferred
     const barFields = keys.filter(k => /^bar[ _]/i.test(k));
     const otherKeys = keys.filter(k => !preferredOrder.includes(k) && !barFields.includes(k));
     const ordered = [];
@@ -236,7 +250,6 @@ function renderRequestDetails(order) {
     const fields = getOrderedFields(order);
     fields.forEach((key) => {
         let value = safe(order[key]);
-        // Pretty print dates
         if ((/date/i).test(key) && value && !isNaN(Date.parse(value))) {
             value = new Date(value).toLocaleString();
         }
@@ -247,6 +260,9 @@ function renderRequestDetails(order) {
     document.getElementById('docTypeLabel').innerText = `Order Info (${safe(order.documentType)})`;
 }
 
+/**
+ * Render files with preview for images, PDFs, TXT, Office files, and download for all.
+ */
 function renderFiles(filesObj) {
     if (!filesObj || Object.keys(filesObj).length === 0) {
         document.getElementById('uploaded-files').innerHTML = "<em>No files uploaded.</em>";
@@ -255,12 +271,22 @@ function renderFiles(filesObj) {
     let html = '';
     for (const [field, file] of Object.entries(filesObj)) {
         if (!file || !file.filename) continue;
-        const fileUrl = `http://localhost:3000/uploads/${file.filename}`;
-        html += `<div class="mb-2"><strong>${prettifyKey(field)}:</strong> `;
+        const fileUrl = `http://localhost:3000/uploads/${encodeURIComponent(file.filename)}`;
+        html += `<div class="file-preview-container mb-2"><strong>${prettifyKey(field)}:</strong><br>`;
         if (isImage(file.filename)) {
-            html += `<br><img src="${fileUrl}" class="request-image" alt="${file.originalname}" /><br>`;
+            html += `<img src="${fileUrl}" class="request-image" alt="${file.originalname}" /><br>`;
+        } else if (isPDF(file.filename)) {
+            html += `<iframe src="${fileUrl}" type="application/pdf"></iframe><br>`;
+        } else if (isText(file.filename)) {
+            html += `<iframe src="${fileUrl}" style="background:#fafafa;"></iframe><br>`;
+        } else if (isOffice(file.filename)) {
+            const viewerUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(fileUrl)}`;
+            html += `<iframe src="${viewerUrl}" frameborder="0"></iframe><br>`;
+        } else {
+            html += `<em>File preview not supported.</em><br>`;
         }
-        html += `<a href="${fileUrl}" target="_blank">${file.originalname}</a> (${file.mimetype}, ${Math.round(file.size/1024)} KB)</div>`;
+        const ext = (file.originalname || '').split('.').pop();
+        html += `<a href="${fileUrl}" download="file.${ext}">${file.originalname}</a> (${file.mimetype || ''}, ${file.size ? Math.round(file.size/1024) : '?'} KB)</div>`;
     }
     document.getElementById('uploaded-files').innerHTML = html;
 }

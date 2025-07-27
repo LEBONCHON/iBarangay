@@ -4,6 +4,28 @@
     <meta charset="UTF-8">
     <title>Orders</title>
     <link rel="stylesheet" href="styles.css">
+    <style>
+      .order-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 0;
+        border-bottom: 1px solid #eee;
+      }
+      .remove-btn {
+        background: none;
+        border: none;
+        color: #c00;
+        font-size: 22px;
+        cursor: pointer;
+        font-weight: bold;
+        margin-left: 16px;
+        transition: color 0.2s;
+      }
+      .remove-btn:hover {
+        color: #900;
+      }
+    </style>
 </head>
 <body>
 <nav>
@@ -120,15 +142,44 @@ async function loadOrders() {
         </div>
         <div class="order-price">₱${price}</div>
         <div class="order-total">₱${total}</div>
+        <button class="remove-btn" title="Remove Order" data-id="${order._id}">&times;</button>
       `;
       orderList.appendChild(orderEl);
     });
 
     document.querySelector('.subtotal').textContent = 'SUBTOTAL: ₱' + subtotal.toFixed(2);
 
+    // Add event listeners to all remove buttons
+    document.querySelectorAll('.remove-btn').forEach(btn => {
+      btn.addEventListener('click', async function() {
+        const orderId = this.getAttribute('data-id');
+        if (confirm('Remove this order?')) {
+          await removeOrder(orderId);
+        }
+      });
+    });
+
   } catch (err) {
     orderList.innerHTML = '<div>Failed to load orders.</div>';
     document.querySelector('.subtotal').textContent = 'SUBTOTAL: ₱0.00';
+  }
+}
+
+async function removeOrder(orderId) {
+  const token = localStorage.getItem('token');
+  if (!token) return;
+  try {
+    const res = await fetch(`/api/requests/${orderId}`, {
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (res.ok) {
+      loadOrders();
+    } else {
+      alert('Failed to remove order.');
+    }
+  } catch (err) {
+    alert('Failed to remove order.');
   }
 }
 

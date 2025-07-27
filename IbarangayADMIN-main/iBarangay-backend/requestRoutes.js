@@ -3,6 +3,23 @@ const router = express.Router();
 const Request = require('./requestFile');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
+const auth = require('./authMiddleware'); // JWT auth middleware
+
+// Get requests for the currently logged-in user (JWT-auth protected)
+router.get('/mine', auth, async (req, res) => {
+  try {
+    const userId = req.user.id;
+    if (!userId) {
+      return res.status(401).json({ message: "Unauthorized. Invalid token." });
+    }
+    const requests = await Request.find({ residentId: userId })
+      .sort({ dateRequested: -1 })
+      .populate('residentId', 'firstName lastName email');
+    res.json(requests);
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err.message });
+  }
+});
 
 // Get all requests (with resident info)
 router.get('/all', async (req, res) => {
@@ -44,7 +61,7 @@ router.patch('/:id/status', async (req, res) => {
   }
 });
 
-// Upload a file to a request (can be extended to support multiple files)
+// Upload a file to a request (for additional file uploads to an existing request)
 router.post('/:id/upload', upload.single('file'), async (req, res) => {
   try {
     if (!req.file) return res.status(400).json({ message: "No file uploaded" });
@@ -59,7 +76,6 @@ router.post('/:id/upload', upload.single('file'), async (req, res) => {
     if (!request) return res.status(404).json({ message: "Request not found" });
 
     if (!request.files || typeof request.files !== "object") request.files = {};
-    // You can allow front-end to specify the field name or just use a default.
     const field = req.body.field || 'uploadedFile' + Date.now();
     request.files[field] = fileData;
     await request.save();
@@ -70,18 +86,40 @@ router.post('/:id/upload', upload.single('file'), async (req, res) => {
   }
 });
 
-// Create a new request (example, adjust as needed)
-router.post('/', async (req, res) => {
+// Create a new request (with text fields and file uploads)
+router.post('/', auth, upload.any(), async (req, res) => {
   try {
-    const request = new Request(req.body);
+    // Map uploaded files by field name
+    let filesMap = {};
+    if (req.files) {
+      req.files.forEach(file => {
+        filesMap[file.fieldname] = {
+          originalname: file.originalname,
+          mimetype: file.mimetype,
+          filename: file.filename,
+          path: file.path,
+          size: file.size
+        };
+      });
+    }
+
+    // Prepare the request data
+    const newRequest = {
+      ...req.body, // All text fields from the form as strings
+      residentId: req.user.id, // From JWT
+      files: filesMap
+    };
+
+    const request = new Request(newRequest);
     await request.save();
-    res.status(201).json(request);
+    res.status(201).json({ success: true, request });
   } catch (err) {
+    console.error("Error creating request:", err);
     res.status(400).json({ message: "Error creating request", error: err.message });
   }
 });
 
-// (Optional) Delete a request by ID
+// Delete a request by ID
 router.delete('/:id', async (req, res) => {
   try {
     const request = await Request.findByIdAndDelete(req.params.id);
