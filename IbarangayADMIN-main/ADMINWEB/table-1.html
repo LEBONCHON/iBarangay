@@ -1,9 +1,8 @@
 <!DOCTYPE html>
-<html data-bs-theme="light" lang="en">
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
-    <title>Order Details - iBarangay</title>
+    <meta charset="UTF-8">
+    <title>Request Details - iBarangay</title>
     <link rel="stylesheet" href="assets/bootstrap/css/bootstrap.min.css">
     <link rel="stylesheet" href="assets/fonts/fontawesome-all.min.css">
     <style>
@@ -11,33 +10,29 @@
         .sidebar .nav-link,
         .sidebar .sidebar-brand,
         .sidebar .sidebar-brand-text,
-        .sidebar .sidebar-brand-icon {
-            color: #000 !important;
-        }
-        .sidebar {
-            background: #C7B98E !important;
-        }
-        .sidebar .nav-link.active {
-            background: rgba(0,0,0,0.1);
-            color: #000 !important;
-        }
-        .sidebar .nav-link i {
-            color: #000 !important;
-        }
-        .sidebar .sidebar-brand-icon img {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            margin-right: 5px;
-        }
-        .sidebar .ibarangay-logo {
-            font-size: 1.6rem;
-            color: #000 !important;
-            margin-right: 5px;
-        }
+        .sidebar .sidebar-brand-icon { color: #000 !important; }
+        .sidebar { background: #C7B98E !important; }
+        .sidebar .nav-link.active { background: rgba(0,0,0,0.1); color: #000 !important;}
+        .sidebar .nav-link i { color: #000 !important;}
+        .sidebar .sidebar-brand-icon img { width: 35px; height: 35px; border-radius: 50%; margin-right: 5px;}
+        .sidebar .ibarangay-logo { font-size: 1.6rem; color: #000 !important; margin-right: 5px;}
         .btn, .btn-warning, .btn-success, .btn-info, .btn-secondary {
             background: #C7B98E !important;
             border-color: #C7B98E !important;
+            color: #000 !important;
+        }
+        .btn-c7b98e, .search-btn-custom {
+            background: #C7B98E !important;
+            border-color: #C7B98E !important;
+            color: #000 !important;
+            border-radius: 6px !important;
+            min-width: 100px;
+            font-size: 1.15rem;
+        }
+        .btn-c7b98e:active, .btn-c7b98e:focus, .btn-c7b98e:hover,
+        .search-btn-custom:active, .search-btn-custom:focus, .search-btn-custom:hover {
+            background: #b2a67c !important;
+            border-color: #b2a67c !important;
             color: #000 !important;
         }
         .btn-primary {
@@ -50,47 +45,30 @@
             border-color: #cfc087 !important;
             color: #000 !important;
         }
-        .btn-c7b98e, #submitBtn, .search-btn-custom {
-            background: #C7B98E !important;
-            border-color: #C7B98E !important;
-            color: #000 !important;
+        .modal-lg { max-width: 700px; }
+        .request-image { max-width: 300px; max-height: 300px; margin: 5px 0; border-radius: 6px; }
+        .details-table th { width: 220px; text-align: right; vertical-align: top; }
+        .details-table td { font-weight: 500; }
+        .action-btns {
+            display: flex;
+            gap: 18px;
+            justify-content: flex-end;
         }
-        .btn-c7b98e:active, .btn-c7b98e:focus, .btn-c7b98e:hover,
-        #submitBtn:active, #submitBtn:focus, #submitBtn:hover,
-        .search-btn-custom:active, .search-btn-custom:focus, .search-btn-custom:hover {
-            background: #b2a67c !important;
-            border-color: #b2a67c !important;
-            color: #000 !important;
+        .file-preview-container {
+            margin-bottom: 1.5rem;
         }
-        .popup-overlay {
-            display: none;
-            position: fixed;
-            z-index: 9999;
-            left: 0; top: 0;
-            width: 100vw; height: 100vh;
-            background: rgba(0,0,0,0.2);
-            justify-content: center;
-            align-items: center;
+        .file-preview-container iframe,
+        .file-preview-container embed {
+            border: 1px solid #eee;
+            border-radius: 6px;
+            width: 100%;
+            min-height: 350px;
+            max-height: 800px;
         }
-        .popup-box {
-            width: 400px;
-            background: rgba(255,255,255,0.95);
-            border-radius: 16px;
-            box-shadow: 0 4px 24px rgba(0,0,0,0.12);
-            position: relative;
-            padding: 2.5rem 1.5rem 2rem 1.5rem;
-            text-align: center;
-        }
-        .popup-close {
-            position: absolute;
-            top: 12px;
-            right: 18px;
-            font-size: 1.5rem;
-            color: #888;
-            cursor: pointer;
-        }
-        .popup-box h5 {
-            margin: 2rem 0 1rem 0;
+        .file-preview-container object {
+            width: 100%;
+            min-height: 350px;
+            max-height: 800px;
         }
     </style>
 </head>
@@ -106,7 +84,7 @@
             <ul class="navbar-nav text-light" id="accordionSidebar">
                 <li class="nav-item"><a class="nav-link" href="index.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a></li>
                 <li class="nav-item"><a class="nav-link" href="profile.html"><i class="fas fa-user"></i><span>Profile</span></a></li>
-                <li class="nav-item"><a class="nav-link" href="table.html"><i class="fas fa-table"></i><span>Orders</span></a></li>
+                <li class="nav-item"><a class="nav-link active" href="table.html"><i class="fas fa-table"></i><span>Orders</span></a></li>
             </ul>
             <div class="text-center d-none d-md-inline">
                 <button class="btn rounded-circle border-0" id="sidebarToggle" type="button"></button>
@@ -115,18 +93,10 @@
     </nav>
     <div class="d-flex flex-column" id="content-wrapper">
         <div id="content">
-            <!-- Topbar with search, bell, and user -->
             <nav class="navbar navbar-expand bg-white shadow mb-4 topbar">
                 <div class="container-fluid">
                     <button class="btn btn-link d-md-none rounded-circle me-3" id="sidebarToggleTop" type="button"><i class="fas fa-bars"></i></button>
-                    <form class="d-none d-sm-inline-block me-auto ms-md-3 my-2 my-md-0 mw-100 navbar-search">
-                        <div class="input-group">
-                            <input class="bg-light form-control border-0 small" type="text" placeholder="Search for ..." id="searchInput">
-                            <button class="btn search-btn-custom py-0" type="button" id="searchBtn"><i class="fas fa-search"></i></button>
-                        </div>
-                    </form>
                     <ul class="navbar-nav flex-nowrap ms-auto">
-                        <!-- Alerts Dropdown -->
                         <li class="nav-item dropdown no-arrow mx-1">
                             <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                 <span class="badge bg-danger badge-counter" id="pending-orders-badge">0</span>
@@ -152,61 +122,43 @@
                     </ul>
                 </div>
             </nav>
-            <!-- End Topbar -->
             <div class="container-fluid">
-                <h3 class="text-dark mb-4">Order Details</h3>
-                <div class="card shadow mb-3">
+                <h3 class="text-dark mb-4">Request Details</h3>
+                <div class="card shadow mb-4">
+                    <div class="card-header py-3">
+                        <p class="text-primary m-0 fw-bold" id="docTypeLabel">Order Info</p>
+                    </div>
                     <div class="card-body">
-                        <form id="orderForm" enctype="multipart/form-data">
-                            <div class="row">
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Name:</label>
-                                        <span id="name"></span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Address:</label>
-                                        <span id="address"></span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Occupation:</label>
-                                        <span id="occupation"></span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Category:</label>
-                                        <span id="category"></span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Order:</label>
-                                        <span id="orders"></span>
-                                    </div>
-                                </div>
-                                <div class="col-md-6">
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Status:</label>
-                                        <select class="form-select" id="statusDropdown">
-                                            <option value="Pending">Pending</option>
-                                            <option value="Completed">Completed</option>
-                                            <option value="Denied">Denied</option>
-                                        </select>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Date Requested:</label>
-                                        <span id="dateRequested"></span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Order Number:</label>
-                                        <span id="orderNumber"></span>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label class="form-label fw-bold">Upload File:</label>
-                                        <input type="file" class="form-control" id="uploadFile" name="uploadFile" />
-                                    </div>
-                                </div>
+                        <div id="request-details"></div>
+                        <hr>
+                        <div>
+                            <h5>Uploaded Files / Photos</h5>
+                            <div id="uploaded-files"></div>
+                        </div>
+                        <hr>
+                        <form id="uploadForm" enctype="multipart/form-data">
+                            <div class="mb-3">
+                                <label for="newFile" class="form-label"><strong>Upload File:</strong></label>
+                                <input class="form-control" type="file" name="file" id="newFile" />
                             </div>
-                            <div class="mt-4 text-end">
+                            <button type="submit" class="btn btn-primary">Upload</button>
+                        </form>
+                        <hr>
+                        <form id="statusForm">
+                            <div class="mb-3">
+                                <label for="statusSelect" class="form-label"><strong>Status:</strong></label>
+                                <select class="form-select" id="statusSelect" name="status">
+                                    <option value="cart">Cart</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="approved">Approved</option>
+                                    <option value="rejected">Rejected</option>
+                                    <option value="completed">Completed</option>
+                                </select>
+                            </div>
+                            <div class="action-btns mt-3">
                                 <button type="submit" class="btn btn-c7b98e" id="submitBtn">Submit</button>
                                 <a href="table.html" class="btn btn-c7b98e">Back</a>
+                                <span id="statusMsg" class="ms-2"></span>
                             </div>
                         </form>
                     </div>
@@ -220,138 +172,175 @@
         </footer>
     </div>
     <a class="border rounded d-inline scroll-to-top" href="#page-top"><i class="fas fa-angle-up"></i></a>
-    <div class="popup-overlay" id="popupOverlay">
-        <div class="popup-box">
-            <span class="popup-close" id="popupClose">&times;</span>
-            <h5>Submission completed</h5>
-        </div>
-    </div>
 </div>
+
 <script src="assets/bootstrap/js/bootstrap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 <script>
-const ORDERS_KEY = "ibarangay_orders";
-function getOrderFromStorage(orderNumber) {
-    const orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
-    return orders.find(ord => ord.orderNumber === orderNumber);
+const API_BASE = "http://localhost:3000/api/requests";
+function getQueryParam(name) {
+    return new URLSearchParams(window.location.search).get(name);
 }
-function updateOrderStatus(orderNumber, newStatus) {
-    let orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
-    const idx = orders.findIndex(ord => ord.orderNumber === orderNumber);
-    if (idx !== -1) {
-        orders[idx].status = newStatus;
-        localStorage.setItem(ORDERS_KEY, JSON.stringify(orders));
-    }
+function safe(val) { return (val === null || val === undefined) ? "" : val; }
+function isImage(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    return ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp'].includes(ext);
 }
-function getOrderNumberFromURL() {
-    const url = new URL(window.location.href);
-    return url.searchParams.get("order");
+function isPDF(filename) {
+    return filename.toLowerCase().endsWith('.pdf');
 }
-function fillOrderDetails() {
-    const orderNumber = getOrderNumberFromURL();
-    const order = getOrderFromStorage(orderNumber);
-    if (order) {
-        document.getElementById('name').textContent = order.name;
-        document.getElementById('address').textContent = order.address || "N/A";
-        document.getElementById('occupation').textContent = order.occupation || "N/A";
-        document.getElementById('category').textContent = order.category;
-        document.getElementById('orders').textContent = order.orders;
-        document.getElementById('statusDropdown').value = order.status;
-        document.getElementById('dateRequested').textContent = order.dateRequested;
-        document.getElementById('orderNumber').textContent = "#" + order.orderNumber;
-    }
+function isText(filename) {
+    return filename.toLowerCase().endsWith('.txt');
 }
-function updateBell() {
-    const orders = JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]");
-    const pending = orders.filter(o=>o.status==="Pending");
-    document.getElementById('pending-orders-badge').textContent = pending.length;
-    const pendingList = document.getElementById('pending-orders-list');
-    if (pendingList) {
-        if (pending.length === 0) {
-            pendingList.innerHTML = "<div class='px-3 py-2'>No pending orders</div>";
-        } else {
-            pendingList.innerHTML = pending.map(o =>
-                `<div class='px-3 py-1'>#${o.orderNumber} - ${o.name}</div>`
-            ).join('');
-        }
-    }
+function isOffice(filename) {
+    const ext = filename.split('.').pop().toLowerCase();
+    return ['doc', 'docx', 'xls', 'xlsx', 'ppt', 'pptx'].includes(ext);
 }
-function getOrdersFilteredBySearch(orders, searchTerm) {
-    if (!searchTerm) return orders;
-    const term = searchTerm.toLowerCase();
-    return orders.filter(order =>
-        (order.name && order.name.toLowerCase().includes(term)) ||
-        (order.address && order.address.toLowerCase().includes(term)) ||
-        (order.occupation && order.occupation.toLowerCase().includes(term)) ||
-        (order.category && order.category.toLowerCase().includes(term)) ||
-        (order.orders && order.orders.toLowerCase().includes(term)) ||
-        (order.status && order.status.toLowerCase().includes(term)) ||
-        (order.dateRequested && order.dateRequested.toLowerCase().includes(term)) ||
-        (order.orderNumber && order.orderNumber.toLowerCase().includes(term))
+let currentRequest = null;
+let requestId = getQueryParam('id');
+
+/**
+ * Prettifies keys for display, removing "Bar ", "Bar_", "barangayID_", "res_" prefixes.
+ */
+function prettifyKey(key) {
+    key = key.replace(/^bar[_ ]/i, '');
+    key = key.replace(/^barangayid[_ ]?/i, '');
+    key = key.replace(/^res[_ ]?/i, '');
+    key = key.replace(/^_+/, '').replace(/_/g, ' ');
+    key = key.replace(/([a-z])([A-Z])/g, '$1 $2');
+    key = key.replace(/\b\w/g, l => l.toUpperCase());
+    if (key.toLowerCase() === "id") return "ID";
+    if (key === "Document Type") return "Order Type";
+    return key.trim();
+}
+
+// Remove declaration fields by key name
+function shouldShowField(key) {
+    const lower = key.toLowerCase();
+    if (lower.includes('declaration')) return false;
+    if (key === 'files' || key === '__v' || key === '_id') return false;
+    return true;
+}
+
+const preferredOrder = [
+    'documentType', 'status', 'dateRequested', 'dateProcessed', 'firstName', 'lastName',
+    'email', 'address', 'category', 'orderNumber', 'occupation', 'dateOfBirth'
+];
+function getOrderedFields(obj) {
+    const keys = Object.keys(obj).filter(k =>
+        shouldShowField(k) && typeof obj[k] !== 'object'
     );
+    const barFields = keys.filter(k => /^bar[ _]/i.test(k));
+    const otherKeys = keys.filter(k => !preferredOrder.includes(k) && !barFields.includes(k));
+    const ordered = [];
+    preferredOrder.forEach(f => {
+        if (keys.includes(f)) ordered.push(f);
+    });
+    barFields.forEach(f => {
+        if (!ordered.includes(f)) ordered.push(f);
+    });
+    otherKeys.forEach(f => {
+        if (!ordered.includes(f)) ordered.push(f);
+    });
+    return ordered;
 }
-function searchAndUpdateDetails(searchTerm) {
-    const orders = getOrdersFilteredBySearch(JSON.parse(localStorage.getItem(ORDERS_KEY) || "[]"), searchTerm);
-    const orderNumber = getOrderNumberFromURL();
-    // If the current order is filtered out, show 'N/A'
-    const order = orders.find(ord => ord.orderNumber === orderNumber);
-    if (order) {
-        document.getElementById('name').textContent = order.name;
-        document.getElementById('address').textContent = order.address || "N/A";
-        document.getElementById('occupation').textContent = order.occupation || "N/A";
-        document.getElementById('category').textContent = order.category;
-        document.getElementById('orders').textContent = order.orders;
-        document.getElementById('statusDropdown').value = order.status;
-        document.getElementById('dateRequested').textContent = order.dateRequested;
-        document.getElementById('orderNumber').textContent = "#" + order.orderNumber;
-    } else {
-        document.getElementById('name').textContent = "N/A";
-        document.getElementById('address').textContent = "N/A";
-        document.getElementById('occupation').textContent = "N/A";
-        document.getElementById('category').textContent = "N/A";
-        document.getElementById('orders').textContent = "N/A";
-        document.getElementById('statusDropdown').value = "Pending";
-        document.getElementById('dateRequested').textContent = "N/A";
-        document.getElementById('orderNumber').textContent = "N/A";
+
+function renderRequestDetails(order) {
+    let html = '<table class="table table-bordered details-table">';
+    const fields = getOrderedFields(order);
+    fields.forEach((key) => {
+        let value = safe(order[key]);
+        if ((/date/i).test(key) && value && !isNaN(Date.parse(value))) {
+            value = new Date(value).toLocaleString();
+        }
+        html += `<tr><th>${prettifyKey(key)}</th><td>${value}</td></tr>`;
+    });
+    html += '</table>';
+    document.getElementById('request-details').innerHTML = html;
+    document.getElementById('docTypeLabel').innerText = `Order Info (${safe(order.documentType)})`;
+}
+
+/**
+ * Render files with preview for images, PDFs, TXT, Office files, and download for all.
+ */
+function renderFiles(filesObj) {
+    if (!filesObj || Object.keys(filesObj).length === 0) {
+        document.getElementById('uploaded-files').innerHTML = "<em>No files uploaded.</em>";
+        return;
+    }
+    let html = '';
+    for (const [field, file] of Object.entries(filesObj)) {
+        if (!file || !file.filename) continue;
+        const fileUrl = `http://localhost:3000/uploads/${encodeURIComponent(file.filename)}`;
+        html += `<div class="file-preview-container mb-2"><strong>${prettifyKey(field)}:</strong><br>`;
+        if (isImage(file.filename)) {
+            html += `<img src="${fileUrl}" class="request-image" alt="${file.originalname}" /><br>`;
+        } else if (isPDF(file.filename)) {
+            html += `<iframe src="${fileUrl}" type="application/pdf"></iframe><br>`;
+        } else if (isText(file.filename)) {
+            html += `<iframe src="${fileUrl}" style="background:#fafafa;"></iframe><br>`;
+        } else if (isOffice(file.filename)) {
+            const viewerUrl = `https://view.officeapps.live.com/op/view.aspx?src=${encodeURIComponent(fileUrl)}`;
+            html += `<iframe src="${viewerUrl}" frameborder="0"></iframe><br>`;
+        } else {
+            html += `<em>File preview not supported.</em><br>`;
+        }
+        const ext = (file.originalname || '').split('.').pop();
+        html += `<a href="${fileUrl}" download="file.${ext}">${file.originalname}</a> (${file.mimetype || ''}, ${file.size ? Math.round(file.size/1024) : '?'} KB)</div>`;
+    }
+    document.getElementById('uploaded-files').innerHTML = html;
+}
+
+async function fetchRequest(id) {
+    try {
+        const res = await axios.get(`${API_BASE}/${id}`, { withCredentials: true });
+        return res.data;
+    } catch (err) {
+        console.error(err);
+        return null;
     }
 }
-document.addEventListener("DOMContentLoaded", function() {
-    fillOrderDetails();
-    updateBell();
-    document.getElementById('orderForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const orderNumber = getOrderNumberFromURL();
-        const newStatus = document.getElementById('statusDropdown').value;
-        updateOrderStatus(orderNumber, newStatus);
-        const overlay = document.getElementById('popupOverlay');
-        overlay.style.display = 'flex';
-        document.getElementById('popupClose').onclick = function() {
-            overlay.style.display = 'none';
-            window.location.href = "table.html";
-        };
-        overlay.onclick = function(event) {
-            if(event.target === overlay) {
-                overlay.style.display = 'none';
-                window.location.href = "table.html";
-            }
-        };
-        setTimeout(function() {
-            if(overlay.style.display === 'flex') {
-                overlay.style.display = 'none';
-                window.location.href = "table.html";
-            }
-        }, 1500);
-    });
-    document.getElementById('searchBtn').onclick = function() {
-        const val = document.getElementById('searchInput').value;
-        searchAndUpdateDetails(val);
-    };
-    document.getElementById('searchInput').addEventListener("keypress", function(e) {
-        if (e.key === 'Enter') {
-            e.preventDefault();
-            document.getElementById('searchBtn').click();
-        }
-    });
-});
+async function updateStatus(event) {
+    event.preventDefault();
+    const status = document.getElementById('statusSelect').value;
+    document.getElementById('statusMsg').innerText = "Updating...";
+    try {
+        await axios.patch(`${API_BASE}/${requestId}/status`, { status }, { withCredentials: true });
+        document.getElementById('statusMsg').innerText = "Status updated!";
+        currentRequest.status = status;
+    } catch (e) {
+        document.getElementById('statusMsg').innerText = "Error updating status!";
+    }
+}
+async function uploadFile(event) {
+    event.preventDefault();
+    const fileInput = document.getElementById('newFile');
+    if (!fileInput.files.length) return;
+    const formData = new FormData();
+    formData.append('file', fileInput.files[0]);
+    try {
+        await axios.post(`${API_BASE}/${requestId}/upload`, formData, {
+            withCredentials: true,
+            headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        loadRequest();
+        fileInput.value = "";
+    } catch (e) {
+        alert("File upload failed.");
+    }
+}
+async function loadRequest() {
+    if (!requestId) { document.body.innerHTML = "<h2>Request ID missing from URL.</h2>"; return; }
+    const order = await fetchRequest(requestId);
+    if (!order) { document.body.innerHTML = "<h2>Request not found.</h2>"; return; }
+    currentRequest = order;
+    renderRequestDetails(order);
+    renderFiles(order.files);
+    document.getElementById('statusSelect').value = order.status || "cart";
+}
+document.getElementById('uploadForm').onsubmit = uploadFile;
+document.getElementById('statusForm').onsubmit = updateStatus;
+window.addEventListener("DOMContentLoaded", loadRequest);
 </script>
 </body>
 </html>
